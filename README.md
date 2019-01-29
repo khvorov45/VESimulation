@@ -1,5 +1,7 @@
 # Structure
 
+need to figure out flowcharts here
+
 # Profile-based usage
 
 A profile is a folder inside `user_settings` with files: `allowed_groups.json estimates.csv sim_options.json vary_table.json`
