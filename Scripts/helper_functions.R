@@ -214,6 +214,7 @@ get_varied <- function(df, possibilities) {
 build_settings <- function(
   args_processed, sim_options, vary_table, allowed_groups, scripts_dir
 ) {
+  names(vary_table) <- tolower(names(vary_table))
   settings <- sim_options
   
   group <- args_processed$group
@@ -465,6 +466,9 @@ read_config <- function(
 #------------------------------------------------------------------------------
 
 get_variant_combinations <- function(possibilities, rule) {
+  
+  possibilities <- tolower(possibilities)
+  rule <- tolower(rule)
   
   n <- length(rule)
   

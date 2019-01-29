@@ -8,7 +8,7 @@
 		"allowed_groups", "sim_options", "vary_table"
 	],
 	"default_only_config" : [
-		"data_cmd_gen_usage", "graph_usage", "run_profile_usage", "sim_usage", 
+		"graph_usage", "run_profile_usage", "sim_usage", 
 		"init_profile_usage"
 	],
 	"data_ext" : "csv",
