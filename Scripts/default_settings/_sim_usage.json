@@ -1,0 +1,7 @@
+{
+	"control_ind" : ["--"],
+	"save_directory_ind" : ["save_directory"],
+	"group_ind" : ["group"],
+	"variants_ind" : ["variants"],
+	"vary_in_group_ind" : ["vary_in_group"]
+}

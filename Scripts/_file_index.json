@@ -1,0 +1,22 @@
+{
+	"default_ind" : "_",
+	"default_folder" : "default_settings",
+	"user_folder" : "user_settings",
+	"user_profiles" : ["default", "test_profile"],
+	"config_ext" : "json",
+	"shared_config" : [
+		"allowed_groups", "sim_options", "vary_table"
+	],
+	"default_only_config" : [
+		"data_cmd_gen_usage", "graph_usage", "run_profile_usage", "sim_usage", 
+		"init_profile_usage"
+	],
+	"data_ext" : "csv",
+	"shared_data" : "estimates",
+	"script_ext" : "R",
+	"scripts" : [
+		"sim_begin", "sim_main", "sim_cycle_parameter", 
+		"sim_repeat", "sim_pop", "sim_pop_group", 
+		"helper_functions"
+	]
+}

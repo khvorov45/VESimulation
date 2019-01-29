@@ -1,0 +1,8 @@
+multithreading in sim_repeat refuses to comply - threads end up calling 
+the same functions (most likely)
+others are similar in speed - not worth the compile time or precompile effort
+
+Maybe there is potential there if we had a void function that could 
+modify dfs by reference (pass function object to thread) 
+but that's probably not gonna fly with rcpp and I don't know what will happen
+to embedded functions.

@@ -1,0 +1,7 @@
+{
+	"control_ind" : ["--"],
+	"save_directory_ind" : ["save_directory"],
+	"data_ind" : ["data"],
+	"errors_ind" : ["errors"],
+	"sample_size_ind" : ["sample_size"]
+}
