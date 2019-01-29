@@ -1,8 +1,10 @@
-# Structure
+# VE Simulation Documentation
+
+## Structure
 
 need to figure out flowcharts here
 
-# Profile-based usage
+## Profile-based usage
 
 A profile is a folder inside `user_settings` with files: `allowed_groups.json estimates.csv sim_options.json vary_table.json`
 
@@ -24,31 +26,31 @@ A profile is a folder inside `user_settings` with files: `allowed_groups.json es
 
       Example:  `["special_no", ["children*", "adults", "elderly"]]` will result in variation only occurring in the `children` group.
 
-  - `sim_options.json` defines `nsam Npop vary_rule `
+  - `sim_options.json` defines `nsam` `Npop` `vary_rule`
 
     - `nsam` - starting population size
 
     - `Npop` - amount of populations to simulate for any one parameter set
 
-    - `vary_rule` - controls variation. Is a list of elements, each one will be treated as a regular expression when looking for parameters to vary in `vary_table.json` 
+    - `vary_rule` - controls variation. Is a list of elements, each one will be treated as a regular expression when looking for parameters to vary in `vary_table.json`
 
       Example: `[".", "p_test_nonari"]` means that all the parameters will be varied as per `vary_table.json` as well as `p_test_nonari`. Resulting data will have all combinations of possible `p_test_nonari` values with the possible values of every other parameter that appears in `vary_table.json`
 
-  -  `vary_table.json` contains all values of the parameters to be used in simulations.
+  - `vary_table.json` contains all values of the parameters to be used in simulations.
 
 - Defining a profile
 
   - Initialization: easiest way is to copy `default` folder inside `user_settings` and rename it
   - Definition: edit the appropriate files
 
-- Running profile: have R execute `run_user_profile.R` script (located in the scripts folder) with the following arguments: 
+- Running profile: have R execute `run_user_profile.R` script (located in the scripts folder) with the following arguments:
 
   `--save_directory` `path_to_some_directory` `--profile_name` `some_profile_name`
 
   - Example on Windows:
 
-   	`Rscript run_user_profile.R --save_directory my_directory --profile_name my_profile`
+    `Rscript run_user_profile.R --save_directory my_directory --profile_name my_profile`
 
-  ​	Assuming `Rscript` is defined in `PATH` system environment variable. If not, either define it or specify full path to `Rscript.exe`, example:
+    ​Assuming `Rscript` is defined in `PATH` system environment variable. If not, either define it or specify full path to `Rscript.exe`, example:
 
-  ​	`C:\Program Files\R\R-3.5.2\bin\Rscript.exe run_user_profile.R --save_directory my_directory --profile_name my_profile`
+    `C:\Program Files\R\R-3.5.2\bin\Rscript.exe run_user_profile.R --save_directory my_directory --profile_name my_profile`
