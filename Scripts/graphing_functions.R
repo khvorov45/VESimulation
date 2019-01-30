@@ -2,8 +2,10 @@
 # Base graph for 1 varied parameter
 #------------------------------------------------------------------------------
 
-graph_base_1 <- function(df, estimates, errors, sample_size, x, y, y_breaks) {
-  x_name <- as.character(estimates[ estimates$Parameter==x, "Description"])
+graph_base_1 <- function(
+  df, descriptions, errors, sample_size, x, y, ylims=c(NA,NA)
+) {
+  x_name <- descriptions[x]
   
   pl <- ggplot(
     data = df, 
@@ -25,7 +27,7 @@ graph_base_1 <- function(df, estimates, errors, sample_size, x, y, y_breaks) {
     ) +
     
     scale_x_continuous(name = x_name, breaks = seq(0,1,0.1)) +
-    scale_y_continuous(name = "Estimated VE") + 
+    scale_y_continuous(name = "Estimated VE", limits = ylims) + 
     scale_color_manual(
       name = "Data type", values = c(4,2),
       labels = c("Administrative","Surveillance")
@@ -69,6 +71,12 @@ graph_base_1 <- function(df, estimates, errors, sample_size, x, y, y_breaks) {
       ) +
       scale_size_continuous(range = c(2,6), name="Sample size") +
       theme(legend.position = "right")
+  }
+
+  if(x == "VE") {
+    pl <- remove_geom(pl, "hline")
+    pl <- pl + 
+      geom_abline(intercept = 0, slope = 1)
   }
   
   return(pl)

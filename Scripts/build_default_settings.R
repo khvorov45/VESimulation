@@ -1,6 +1,6 @@
 # Isn't ready
 
-build_def_estimates <- function(filenames) {  
+build_def_estimates <- function(filenames) {
   
   estimates_filename <- paste0(filenames$default_ind, filenames$estimates)
   estimates_filepath <- file.path(filenames$default_folder, estimates_filename)
@@ -62,7 +62,7 @@ build_def_vary_table <- function(file_index_loc = "_file_index.json") {
   cat("Done\n")
   
   cat("Variation table saved to:", vary_table_filename, "in scripts folder\n")
-  
+
   setwd(called_from)
 }
 

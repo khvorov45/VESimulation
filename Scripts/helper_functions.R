@@ -137,15 +137,15 @@ find_start_size <- function(proportions, nsam) {
 format_estimates_init <- function(estimates_og, group) {
   
   pop_est <- estimates_og
-  
-  # Narrow to the required group:
+
   names(pop_est) <- gsub("[.]|[[:digit:]]", '', names(pop_est))
   names(pop_est) <- tolower(names(pop_est))
+  #pop_est[ , "parameter"] <- tolower(pop_est[ , "parameter"])
   pop_est <- narrow_group(pop_est, group)
   
   # Move parameter names to row names:
-  pop_est <- pop_est[2:ncol(pop_est)]
-  rownames(pop_est) <- estimates_og[ , "Parameter"]
+  rownames(pop_est) <- pop_est[ , "parameter"]
+  pop_est <- select(pop_est, -parameter)
   
   # Format p_test_ari:
   n_groups <- ncol(pop_est)
@@ -214,7 +214,7 @@ get_varied <- function(df, possibilities) {
 build_settings <- function(
   args_processed, sim_options, vary_table, allowed_groups, scripts_dir
 ) {
-  names(vary_table) <- tolower(names(vary_table))
+  #names(vary_table) <- tolower(names(vary_table))
   settings <- sim_options
   
   group <- args_processed$group
@@ -290,7 +290,8 @@ read_arg <- function(control_indicator, control_el, args) {
   
   if((needed_ind) == (next_ind - 1)) return(TRUE)
   
-  arg <- tolower(args[(needed_ind + 1) : (next_ind - 1)])
+  arg <-args[(needed_ind + 1) : (next_ind - 1)]
+  #arg <- tolower(arg)
   
   return(arg)
 }
@@ -374,27 +375,45 @@ is_directory <- function(arg) {
 }
 
 #------------------------------------------------------------------------------
-# Retruns dataframes in directory or just one if 
+# Copies info folders (used for graphing)
 #------------------------------------------------------------------------------
 
-get_data <- function(data_path) {
-  data <- list()
-  if(is_directory(data_path)) {
-    if(!dir.exists(data_path)) stop("directory ",data_path," not found")
-    data_files <- list_files_with_type(data_path, "data")
-	  count <- 0
-    for(data_file in data_files) {
-	    count <- count + 1
-	    data[[count]] <- read.csv(data_file)
-	    data[[count]][, "filename"] <-data_file
-	  }
+copy_info <- function(from, to) {
+  to_copy <- c("full_log","parameters_used","settings_used")
+  start_dirs <- file.path(from, to_copy)
+  end_dirs <- file.path(to, to_copy)
+
+  end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
+  start_f <- function(dir) {
+    if(!(dir.exists(dir))) stop("info folder(s) not found")
   }
-  else { 
-    if(!file.exists(data_path)) stop("file ",data_path," not found")
-    data[[1]] <- read.csv(data_path)
-    data[[1]][, "filename"] <- data_path
+
+  lapply(start_dirs, start_f)
+  lapply(end_dirs, end_f)
+
+  ind <- 0
+  for(dir in start_dirs) {
+    ind <- ind+1
+    files <- list.files(dir)
+    paths <- file.path(dir, files)
+    lapply(paths, file.copy, end_dirs[ind], overwrite=TRUE)
   }
-  return(data)
+}
+
+#------------------------------------------------------------------------------
+# Returns min and max of the specified variable in dfs
+#------------------------------------------------------------------------------
+
+get_minmax <- function(data_filepaths, var) {
+  vals <- c()
+  for(data_file in data_filepaths) {
+    df <- read.csv(data_file)
+    vals <- c(vals, df[ , var])
+  }
+  vals <- na.omit(vals)
+  vals <- vals[vals > -1 & vals < 1]
+
+  return(c(min(vals),max(vals)))
 }
 
 #------------------------------------------------------------------------------
@@ -467,8 +486,8 @@ read_config <- function(
 
 get_variant_combinations <- function(possibilities, rule) {
   
-  possibilities <- tolower(possibilities)
-  rule <- tolower(rule)
+  #possibilities <- tolower(possibilities)
+  #rule <- tolower(rule)
   
   n <- length(rule)
   

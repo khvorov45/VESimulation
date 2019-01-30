@@ -5,30 +5,9 @@
 #------------------------------------------------------------------------------
 
 
-make_conventional_graph <- function(args) {
-  
-  called_from <- getwd()
-  full_cmds <- commandArgs(trailingOnly = F)
-  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
-  setwd(scripts_dir)
-  
-  filenames <- fromJSON("_file_index.json")
-  source("graphing_functions.R")
-  source(filenames$helper_functions)
-  estimates <- read.csv(file.path(filenames$user_folder, filenames$estimates))
-  usage_options <- fromJSON(
-    file.path(
-      filenames$default_folder, 
-      paste0(filenames$default_ind, filenames$graph_usage)
-    )
-  )
-  vary_table <- fromJSON(
-    file.path(
-      filenames$default_folder, 
-      paste0(filenames$default_ind, filenames$vary_table)
-    )
-  )
-  setwd(called_from)
+make_conventional_graph <- function(
+  args, usage_options, all_variants, descriptions
+) {
   
   args_processed <- process_args(args, usage_options)
   if(!(dir.exists(args_processed$save_directory))) 
@@ -36,20 +15,31 @@ make_conventional_graph <- function(args) {
   
   # Add input checks?
   
-  data_to_graph <- get_data(args_processed$data)
+  data_filepaths <- list_files_with_type(args_processed$data, type="data")
+  copy_info(args_processed$data, args_processed$save_directory)
   
-  amount_total <- length(data_to_graph)
+  if(args_processed$fix_y) {
+    cat("Fixing y at ")
+    ylims <- get_minmax(data_filepaths, "VE_est_mean")
+    cat("min", ylims[1],"max",ylims[2],"\n\n")
+  } 
+  else {
+    cat("Not fixing y\n\n")
+    ylims <- c(NA,NA)
+  } 
+
+  amount_total <- length(data_filepaths)
   amount_done <- 0
   diffs <- c()
-  for(df in data_to_graph) {
+  for(data_file in data_filepaths) {
     start <- Sys.time()
-    
+    df <- read.csv(data_file)
     if("overall" %in% unique(df$name)) df <- df[df$name=="overall" , ]
     graph_filename <- unique(
-      gsub("[.][[:alpha:]]{1,3}$",".png", basename(df$filename))
+      gsub("[.][[:alpha:]]{1,3}$",".png", basename(data_file))
     )
     
-    varied <- get_varied(df, names(vary_table))
+    varied <- get_varied(df, all_variants)
     
     x_axis <- varied[1]
     
@@ -60,7 +50,7 @@ make_conventional_graph <- function(args) {
     y_axis <- "VE_est_mean"
     
     save_units <- "in"
-    cat("File:",unique(df$filename),"\n")
+    cat("File:",data_file,"\n")
     cat("Graphing",x_axis,"on x;",y_axis,"on y")
     
     if (!is.null(facet_variable)) {
@@ -68,8 +58,8 @@ make_conventional_graph <- function(args) {
     } else { cat("\n") }
     
     pl <- graph_base_1(
-      df, estimates, args_processed$errors, args_processed$sample_size, 
-      x = x_axis, y = y_axis)
+      df, descriptions, args_processed$errors, args_processed$sample_size, 
+      x = x_axis, y = y_axis, ylims = ylims)
     
     if (!is.null(facet_variable)) {
       pl <- add_facets(pl,facet_variable)
@@ -103,5 +93,41 @@ if(sys.nframe()==0) {
   library(ggedit)
   library(jsonlite)
   library(tools)
-  make_conventional_graph(commandArgs(trailingOnly = T))
+
+  called_from <- getwd()
+  full_cmds <- commandArgs(trailingOnly = F)
+  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
+  setwd(scripts_dir)
+  
+  filenames <- fromJSON("_file_index.json")
+  script_names <- paste0(
+    filenames$scripts, ".", filenames$script_ext
+  )
+  sapply(script_names, source)
+
+  default_config <- read_config(filenames, default = TRUE)
+  usage_options <- default_config$graph_usage
+  all_variants <- names(default_config$vary_table)
+
+  estimates_data_name <- paste0( 
+    filenames$default_ind, filenames$shared_data, ".", filenames$data_ext
+  )
+  default_data <- read.csv(
+    file.path(
+      filenames$default_folder, 
+      estimates_data_name
+    )
+  )
+
+  descriptions <- as.character(default_data[ , "Description"])
+  names(descriptions) <- default_data[ , "Parameter"]
+
+  setwd(called_from)
+  
+  make_conventional_graph(
+    commandArgs(trailingOnly = T), 
+    usage_options, 
+    all_variants,
+    descriptions
+  )
 }

@@ -4,6 +4,16 @@
 
 need to figure out flowcharts here
 
+![test](test.svg)
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
 ## Profile-based usage
 
 A profile is a folder inside `user_settings` with files: `allowed_groups.json estimates.csv sim_options.json vary_table.json`
@@ -12,9 +22,9 @@ A profile is a folder inside `user_settings` with files: `allowed_groups.json es
 
   - `estimates.csv` holds the parameter values to be passed to the simulation function. Columns correspond to different parameter sets. Which columns (sets) will be passed is controlled by `allowed_groups.json`
 
-  - `allowed_groups.json` defines a list of groups (parameter sets) that will be used for the simulation. 
+  - `allowed_groups.json` defines a list of groups (parameter sets) that will be used for the simulation.
 
-    Example 1: `["special_no"]` will result in only the parameter set in column `special_no` being passed. This will result in simulations of populations where every individual is created using parameter values specified in `special_no` column in `estimates.csv` 
+    Example 1: `["special_no"]` will result in only the parameter set in column `special_no` being passed. This will result in simulations of populations where every individual is created using parameter values specified in `special_no` column in `estimates.csv`
 
     Example 2: `["special_no", "special_sens"]` will result in the parameter set in column `special_no` being passed leading to the corresponding population simulations. Then the parameter set in column  `special_sens` will be passed leading to another set of simulations.
 

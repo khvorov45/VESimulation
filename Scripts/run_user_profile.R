@@ -54,7 +54,6 @@ run_user_profile <- function(
         ), 
         paste(gsub('[*]','',group[grepl('[*]',group)]))
       )
-      user_data <- user_profile$user_data
       
       run_simulation(
         arg_set, user_profile, default_config, scripts_dir
@@ -79,7 +78,6 @@ run_user_profile <- function(
     round(sum(diffs)/60,1), "m)\n",sep=""
   )
 }
-
 
 if(sys.nframe()==0) {
   options("scipen"=100) # For printing in non-scientific
