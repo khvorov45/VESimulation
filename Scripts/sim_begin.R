@@ -2,7 +2,7 @@
 # The script that will start all data generation
 #------------------------------------------------------------------------------
 
-run_simulation <- function(
+sim_begin <- function(
   sim_args, user_profile, default_config, scripts_dir
 ) {
 
@@ -30,6 +30,7 @@ run_simulation <- function(
   #----------------------------------------------------------------------------
   
   # Simulate:
+  
   data <- sim_main(estimates, settings)
   
   #----------------------------------------------------------------------------
@@ -99,5 +100,5 @@ if(sys.nframe()==0) {
   
   register_par()
   
-  run_simulation(sim_args, user_profile, default_config, scripts_dir)
+  sim_begin(sim_args, user_profile, default_config, scripts_dir)
 }

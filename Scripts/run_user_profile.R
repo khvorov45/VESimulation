@@ -55,7 +55,7 @@ run_user_profile <- function(
         paste(gsub('[*]','',group[grepl('[*]',group)]))
       )
       
-      run_simulation(
+      sim_begin(
         arg_set, user_profile, default_config, scripts_dir
       )
       
