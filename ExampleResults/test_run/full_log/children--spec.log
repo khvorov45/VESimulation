@@ -1,0 +1,257 @@
+Read:
+       Parameter X Special_no Special_sens Special_spec Children...15.
+1           prop F         NA           NA           NA          0.189
+2          p_vac F        0.5         0.50         0.50          0.110
+3       sens_vac D        1.0         1.00         1.00          1.000
+4       spec_vac D        1.0         1.00         1.00          1.000
+5             VE F        0.5         0.50         0.50          0.630
+6         IP_flu F        0.3         0.30         0.30          0.050
+7      IP_nonflu F        0.3         0.30         0.30          0.100
+8    p_sympt_ari F        1.0         1.00         1.00          0.840
+9     p_clin_ari F        1.0         1.00         1.00          1.000
+10    p_test_ari F        1.0         1.00         1.00          0.490
+11 p_test_nonari D        1.0         1.00         1.00          1.000
+12          sens D        1.0         0.95         1.00          0.860
+13          spec D        1.0         1.00         0.95          0.984
+   Adults..15.65. Elderly..65..
+1           0.657         0.154
+2           0.250         0.660
+3           1.000         1.000
+4           1.000         1.000
+5           0.510         0.390
+6           0.050         0.050
+7           0.100         0.100
+8           0.840         0.840
+9           0.400         1.000
+10          1.000         0.640
+11          1.000         1.000
+12          0.860         0.860
+13          0.984         0.984
+                                                                              Description
+1                                  Proportion of the age groups in the general population
+2                                                         Probability of being vaccinated
+3                                                     Sensitivity of exposure measurement
+4                                                     Specificity of exposure measurement
+5                                                                   Vaccine effectiveness
+6                                                          Influenza risk in unvaccinated
+7                                                      Non-influenza ARI risk in everyone
+8                                                Probability of the ARI being symptomatic
+9  Relative probability of being clinically assessed as having ARI when it is symptomatic
+10                                Relative tested probability for clinically assessed ARI
+11               Relative tested probability for everyone without clinically assessed ARI
+12                                                          Sensitivity of influenza test
+13                                                          Specificity of influenza test
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Starting simulations on group(s): children | times: 20 | starting size: 20000 |
+	 to vary: spec | in group(s): children
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Estimates initial format:
+              children
+prop             0.189
+p_vac            0.110
+sens_vac         1.000
+spec_vac         1.000
+VE               0.630
+IP_flu           0.050
+IP_nonflu        0.100
+p_sympt_ari      0.840
+p_clin_ari       1.000
+p_test_ari       1.000
+p_test_nonari    1.000
+sens             0.860
+spec             0.984
+
+set spec to 0.6 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.60
+nsam          20000.00
+
+set spec to 0.65 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.65
+nsam          20000.00
+
+set spec to 0.7 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.70
+nsam          20000.00
+
+set spec to 0.75 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.75
+nsam          20000.00
+
+set spec to 0.8 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.80
+nsam          20000.00
+
+set spec to 0.85 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.85
+nsam          20000.00
+
+set spec to 0.9 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.90
+nsam          20000.00
+
+set spec to 0.95 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              0.95
+nsam          20000.00
+
+set spec to 1 
+estimates sent (final format):
+              children
+prop              1.00
+p_vac             0.11
+sens_vac          1.00
+spec_vac          1.00
+VE                0.63
+IP_flu            0.05
+IP_nonflu         0.10
+p_sympt_ari       0.84
+p_clin_ari        1.00
+p_test_ari        1.00
+p_test_nonari     1.00
+sens              0.86
+spec              1.00
+nsam          20000.00
+
+
+Simulation done
+
+Results:
+# A tibble: 18 x 7
+   name     type           VE_est_mean VE_est_sd n_study_mean VE_true  spec
+   <chr>    <fct>                <dbl>     <dbl>        <dbl>   <dbl> <dbl>
+ 1 children administrative      0.0689    0.0380       20000     0.63  0.6 
+ 2 children surveillance        0.280     0.102         2464.    0.63  0.6 
+ 3 children administrative      0.0452    0.0487       20000     0.63  0.65
+ 4 children surveillance        0.284     0.0990        2458.    0.63  0.65
+ 5 children administrative      0.0883    0.0406       20000     0.63  0.7 
+ 6 children surveillance        0.331     0.0727        2457.    0.63  0.7 
+ 7 children administrative      0.0825    0.0460       20000     0.63  0.75
+ 8 children surveillance        0.370     0.0916        2462.    0.63  0.75
+ 9 children administrative      0.101     0.0429       20000     0.63  0.8 
+10 children surveillance        0.398     0.111         2459.    0.63  0.8 
+11 children administrative      0.115     0.0390       20000     0.63  0.85
+12 children surveillance        0.447     0.0784        2459.    0.63  0.85
+13 children administrative      0.194     0.0566       20000     0.63  0.9 
+14 children surveillance        0.482     0.0896        2457.    0.63  0.9 
+15 children administrative      0.290     0.0717       20000     0.63  0.95
+16 children surveillance        0.529     0.0725        2467.    0.63  0.95
+17 children administrative      0.640     0.0626       20000     0.63  1   
+18 children surveillance        0.602     0.0744        2478.    0.63  1   
+
+saved data to ../ExampleResults/test_run/children--spec.csv 
+saved settings to ../ExampleResults/test_run/settings_used/children--spec.txt 
+saved read estimates to ../ExampleResults/test_run/parameters_used/children--spec.txt 

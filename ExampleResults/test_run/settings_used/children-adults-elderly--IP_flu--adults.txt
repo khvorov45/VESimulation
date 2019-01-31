@@ -1,0 +1,19 @@
+{
+  "nsam": [20000],
+  "Npop": [20],
+  "vary_rule": ["."],
+  "group": ["children", "adults", "elderly"],
+  "to_vary": {
+    "IP_flu": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+  },
+  "vary_in_group": ["adults"],
+  "save_locs": {
+    "folder": ["../ExampleResults/test_run"],
+    "data": ["../ExampleResults/test_run/children-adults-elderly--IP_flu--adults.csv"],
+    "settings": ["../ExampleResults/test_run/settings_used/children-adults-elderly--IP_flu--adults.txt"],
+    "parameters": ["../ExampleResults/test_run/parameters_used/children-adults-elderly--IP_flu--adults.txt"],
+    "full_log_perm": ["../ExampleResults/test_run/full_log/children-adults-elderly--IP_flu--adults.log"],
+    "full_log": ["../Scripts/_current.log"],
+    "parallel_log": ["../ExampleResults/test_run/full_log/parallel.log"]
+  }
+}

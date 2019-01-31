@@ -1,0 +1,19 @@
+{
+  "nsam": [20000],
+  "Npop": [20],
+  "vary_rule": ["."],
+  "group": ["children", "adults", "elderly"],
+  "to_vary": {
+    "p_sympt_ari": [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+  },
+  "vary_in_group": ["adults"],
+  "save_locs": {
+    "folder": ["../ExampleResults/test_run"],
+    "data": ["../ExampleResults/test_run/children-adults-elderly--p_sympt_ari--adults.csv"],
+    "settings": ["../ExampleResults/test_run/settings_used/children-adults-elderly--p_sympt_ari--adults.txt"],
+    "parameters": ["../ExampleResults/test_run/parameters_used/children-adults-elderly--p_sympt_ari--adults.txt"],
+    "full_log_perm": ["../ExampleResults/test_run/full_log/children-adults-elderly--p_sympt_ari--adults.log"],
+    "full_log": ["../Scripts/_current.log"],
+    "parallel_log": ["../ExampleResults/test_run/full_log/parallel.log"]
+  }
+}

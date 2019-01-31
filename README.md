@@ -23,7 +23,7 @@ Can be ran from the command line with arguments `--save_directory`  `mydir` `--g
 \* More variants can be specified \
 \*\* Optional argument
 
-Builds arguments for `sim_main` and writes data that `sim_main` returns.
+Builds arguments for `sim_main` and writes data that `sim_main` returns into a directory specified by the `--save_directory` argument. Also saves `settings` that it passes to `sim_main` to `settings_used` folder inside the save directory, saves estimates that it read to `parameters_used` folder inside the save directory and saves the full log of the simulation run to `full_log` folder inside the save directory.
 
 #### `sim_main`
 
@@ -156,3 +156,16 @@ A profile is a folder inside `user_settings` with files: `allowed_groups.json es
     ​Assuming `Rscript` is defined in `PATH` system environment variable. If not, either define it or specify full path to `Rscript.exe`, example:
 
     `C:\Program Files\R\R-3.5.2\bin\Rscript.exe run_user_profile.R --save_directory my_directory --profile_name my_profile`
+
+## Graphing results
+
+Have R execute `graph_conventional.R` script with the following arguments: \
+`--save_directory` `mydir` `--data` `my_data_folder*` `--sample_size**` `--errors**` `--fix_y**` \
+\* Data folder is expected to contain `full_log`, `parameters_used`, `settings_used` folders. Those are created automatically when a profile is run. \
+\*\* Optional arguments:
+
+* `--sample_size` - if present, size of points will scale with the underlying size of the study.
+* `--errors` - if present, error bars will appear on the graphs
+* `--fix_y` - if present, minimum and maximum values for the y axis in all graphs will be the minimum and maximum values of `VE_est_mean` found in all files in the data folder.
+
+Graphs will be saved to directory specified by `save_directory`. Also, `full_log`, `parameters_used`, `settings_used` folders will be copied from data directory to save directory.

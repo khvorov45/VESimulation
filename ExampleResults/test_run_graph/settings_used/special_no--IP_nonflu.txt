@@ -1,0 +1,19 @@
+{
+  "nsam": [20000],
+  "Npop": [20],
+  "vary_rule": ["."],
+  "group": ["special_no"],
+  "to_vary": {
+    "IP_nonflu": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+  },
+  "vary_in_group": ["special_no"],
+  "save_locs": {
+    "folder": ["../ExampleResults/test_run"],
+    "data": ["../ExampleResults/test_run/special_no--IP_nonflu.csv"],
+    "settings": ["../ExampleResults/test_run/settings_used/special_no--IP_nonflu.txt"],
+    "parameters": ["../ExampleResults/test_run/parameters_used/special_no--IP_nonflu.txt"],
+    "full_log_perm": ["../ExampleResults/test_run/full_log/special_no--IP_nonflu.log"],
+    "full_log": ["../Scripts/_current.log"],
+    "parallel_log": ["../ExampleResults/test_run/full_log/parallel.log"]
+  }
+}

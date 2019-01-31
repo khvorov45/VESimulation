@@ -1,0 +1,142 @@
+[
+  {
+    "Parameter": "prop",
+    "X": "F",
+    "Children...15.": 0.189,
+    "Adults..15.65.": 0.657,
+    "Elderly..65..": 0.154,
+    "Description": "Proportion of the age groups in the general population"
+  },
+  {
+    "Parameter": "p_vac",
+    "X": "F",
+    "Special_no": 0.5,
+    "Special_sens": 0.5,
+    "Special_spec": 0.5,
+    "Children...15.": 0.11,
+    "Adults..15.65.": 0.25,
+    "Elderly..65..": 0.66,
+    "Description": "Probability of being vaccinated"
+  },
+  {
+    "Parameter": "sens_vac",
+    "X": "D",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 1,
+    "Adults..15.65.": 1,
+    "Elderly..65..": 1,
+    "Description": "Sensitivity of exposure measurement"
+  },
+  {
+    "Parameter": "spec_vac",
+    "X": "D",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 1,
+    "Adults..15.65.": 1,
+    "Elderly..65..": 1,
+    "Description": "Specificity of exposure measurement"
+  },
+  {
+    "Parameter": "VE",
+    "X": "F",
+    "Special_no": 0.5,
+    "Special_sens": 0.5,
+    "Special_spec": 0.5,
+    "Children...15.": 0.63,
+    "Adults..15.65.": 0.51,
+    "Elderly..65..": 0.39,
+    "Description": "Vaccine effectiveness"
+  },
+  {
+    "Parameter": "IP_flu",
+    "X": "F",
+    "Special_no": 0.3,
+    "Special_sens": 0.3,
+    "Special_spec": 0.3,
+    "Children...15.": 0.05,
+    "Adults..15.65.": 0.05,
+    "Elderly..65..": 0.05,
+    "Description": "Influenza risk in unvaccinated"
+  },
+  {
+    "Parameter": "IP_nonflu",
+    "X": "F",
+    "Special_no": 0.3,
+    "Special_sens": 0.3,
+    "Special_spec": 0.3,
+    "Children...15.": 0.1,
+    "Adults..15.65.": 0.1,
+    "Elderly..65..": 0.1,
+    "Description": "Non-influenza ARI risk in everyone"
+  },
+  {
+    "Parameter": "p_sympt_ari",
+    "X": "F",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 0.84,
+    "Adults..15.65.": 0.84,
+    "Elderly..65..": 0.84,
+    "Description": "Probability of the ARI being symptomatic"
+  },
+  {
+    "Parameter": "p_clin_ari",
+    "X": "F",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 1,
+    "Adults..15.65.": 0.4,
+    "Elderly..65..": 1,
+    "Description": "Relative probability of being clinically assessed as having ARI when it is symptomatic"
+  },
+  {
+    "Parameter": "p_test_ari",
+    "X": "F",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 0.49,
+    "Adults..15.65.": 1,
+    "Elderly..65..": 0.64,
+    "Description": "Relative tested probability for clinically assessed ARI"
+  },
+  {
+    "Parameter": "p_test_nonari",
+    "X": "D",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 1,
+    "Children...15.": 1,
+    "Adults..15.65.": 1,
+    "Elderly..65..": 1,
+    "Description": "Relative tested probability for everyone without clinically assessed ARI"
+  },
+  {
+    "Parameter": "sens",
+    "X": "D",
+    "Special_no": 1,
+    "Special_sens": 0.95,
+    "Special_spec": 1,
+    "Children...15.": 0.86,
+    "Adults..15.65.": 0.86,
+    "Elderly..65..": 0.86,
+    "Description": "Sensitivity of influenza test"
+  },
+  {
+    "Parameter": "spec",
+    "X": "D",
+    "Special_no": 1,
+    "Special_sens": 1,
+    "Special_spec": 0.95,
+    "Children...15.": 0.984,
+    "Adults..15.65.": 0.984,
+    "Elderly..65..": 0.984,
+    "Description": "Specificity of influenza test"
+  }
+]
