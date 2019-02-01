@@ -15,7 +15,7 @@
 	"shared_data" : "estimates",
 	"script_ext" : "R",
 	"scripts" : [
-		"sim_begin", "sim_main", "sim_cycle_parameter", 
+		"sim_begin", "sim_main", "sim_set_functions", "sim_cycle_parameter", 
 		"sim_repeat", "sim_pop", "sim_pop_group", 
 		"helper_functions", "graphing_functions"
 	]

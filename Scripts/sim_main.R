@@ -24,7 +24,7 @@ sim_main <- function(estimates, settings) {
   double_cat("\n", file = settings$save_locs$full_log, FALSE)
   
   # Simulate:
-  data <- sim_cycle_parameter(pop_est, settings)
+  data <- sim_set_functions(pop_est, settings)
   double_cat("\nSimulation done\n\n", file = settings$save_locs$full_log)
   
   # Print results:

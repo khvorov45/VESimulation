@@ -13,7 +13,7 @@ sim_begin <- function(
     args_processed, user_profile$sim_options, 
     user_profile$vary_table, user_profile$allowed_groups, scripts_dir
   )
-  
+
   verify_settings(settings, user_profile$user_data)
   
   cat("",file = settings$save_locs$full_log) # Log file create & clear
@@ -30,7 +30,6 @@ sim_begin <- function(
   #----------------------------------------------------------------------------
   
   # Simulate:
-  
   data <- sim_main(estimates, settings)
   
   #----------------------------------------------------------------------------

@@ -138,9 +138,8 @@ format_estimates_init <- function(estimates_og, group) {
   
   pop_est <- estimates_og
 
-  names(pop_est) <- gsub("[.]|[[:digit:]]", '', names(pop_est))
-  names(pop_est) <- tolower(names(pop_est))
-  #pop_est[ , "parameter"] <- tolower(pop_est[ , "parameter"])
+  names(pop_est) <- standardise_names(names(pop_est))
+
   pop_est <- narrow_group(pop_est, group)
   
   # Move parameter names to row names:
@@ -171,6 +170,12 @@ get_group_parameters <- function(pop_est, group_name) {
     parameters <- pop_est[[group_name]]
     names(parameters) <- rownames(pop_est)
     return(parameters)
+}
+
+standardise_names <- function(all_names) {
+  st_names <- gsub("[.]|[[:digit:]]", '', all_names)
+  st_names <- tolower(st_names)
+  return(st_names)
 }
 
 #------------------------------------------------------------------------------
@@ -341,7 +346,7 @@ get_save_filename <- function(group, to_vary_names, vary_in_group) {
     paste0(group,collapse="-"),"--", 
     paste0(to_vary_names,collapse="-"))
   if(all(group %in% vary_in_group)) return(filename)
-  filename <- paste0(filename,"--",paste0(vary_in_group,collapse=''))
+  filename <- paste0(filename,"--",paste0(vary_in_group,collapse='-'))
   return(filename)
 }
 

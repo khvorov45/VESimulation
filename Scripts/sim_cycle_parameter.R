@@ -24,19 +24,37 @@ sim_cycle_parameter <- function(pop_est, settings) {
   
   variant_used <- settings$to_vary[1]
   settings$to_vary <- settings$to_vary[-1]
+
+  par_name <- names(variant_used)
+  par_group_values <- variant_used[[1]]
+  par_group_values <- par_group_values[
+    names(par_group_values) %in% settings$vary_in_group
+  ]
+
+  # SET FUNCTIONS??? Probably do so beforehand
+
+  par_group_values <- as.data.frame(par_group_values)
+  value_count <- nrow(par_group_values)
   
   data_complete <- data.frame()
   
-  for(val in variant_used[[1]]) {
+  for(ind in 1:value_count) {
     
-    pop_est[names(variant_used) , settings$vary_in_group] <- val
-	
+    pop_est[par_name , settings$vary_in_group] <- par_group_values[ind , ]
     
-	double_cat(paste("set", names(variant_used), "to", val, "\n"), 
-	  file = settings$save_locs$full_log)
+	  double_cat(
+      paste(
+        "set", names(variant_used), "to", 
+        paste0(par_group_values[ind , ],collapse=' '), 
+        "\n"
+      ), 
+	    file = settings$save_locs$full_log
+    ) 
     data <- sim_cycle_parameter(pop_est, settings)
-    
-    data[names(variant_used)] <- val
+
+    data[
+      data$name %in% settings$vary_in_group, par_name
+    ] <- par_group_values[ind , ]
     
     data_complete <- rbind(data_complete, data)
   }

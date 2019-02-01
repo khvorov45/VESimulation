@@ -3,17 +3,9 @@
 # as per user settings
 #------------------------------------------------------------------------------
 
-run_user_profile_prob <- function(
-  save_directory, user_profile, default_config, scripts_dir
-) {
-  print(user_profile)
-}
-
 run_user_profile <- function(
   save_directory, user_profile, default_config, scripts_dir
 ) {
-  
-  #stop("entered fixed")
 
   if(length(save_directory) != 1) stop("Too many arguments in save_directory")
   if(save_directory==F) stop("save_directory missing")
@@ -131,7 +123,7 @@ if(sys.nframe()==0) {
   #----------------------------------------------------------------------------
   
   register_par()
-  
+
   run_user_profile(
     processed_args$save_directory, user_profile, default_config, scripts_dir
   )

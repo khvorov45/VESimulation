@@ -1,3 +1,4 @@
 {
-  "sens_vac": ["beta", 2, 2]
+  "sens_vac": ["beta", 2, 2],
+  "spec_vac": ["beta", 3, 3]
 }

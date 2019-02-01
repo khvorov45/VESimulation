@@ -43,29 +43,6 @@ build_def_groups <- function(file_index_loc = "_file_index.json") {
   setwd(called_from)
 }
 
-build_def_vary_table <- function(file_index_loc = "_file_index.json") {  
-  called_from <- getwd()
-  full_cmds <- commandArgs(trailingOnly = F)
-  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
-  setwd(scripts_dir)
-  source("build_scripts_utilities.R")
-  
-  set_wd_to_scripts()
-  filenames <- fromJSON(file_index_loc)
-  
-  vary_table_filename <- paste0(filenames$default_ind, filenames$vary_table)
-  vary_table_filepath <- file.path(filenames$default_folder, vary_table_filename)
-  
-  cat("\nRefreshing variation table... ")
-  vary_table <- make_vary_table()
-  cat(toJSON(vary_table, pretty = T), file = vary_table_filepath)
-  cat("Done\n")
-  
-  cat("Variation table saved to:", vary_table_filename, "in scripts folder\n")
-
-  setwd(called_from)
-}
-
 read_from_gs <- function(filename, sheetname, skip = 0) {
   suppressMessages(
     df <- gs_title(filename) %>% 
@@ -74,7 +51,37 @@ read_from_gs <- function(filename, sheetname, skip = 0) {
   return(df)
 }
 
-make_vary_table <- function() {
+build_def_vary_table <- function(filenames, group_names, par_names) {
+  
+  group_names <- standardise_names(group_names)
+  
+  vary_table_filename <- paste0(
+    filenames$default_ind, "vary_table", ".", filenames$config_ext
+  )
+  
+  cat("Refreshing variation table... ")
+  
+  
+  create_entry <- function(par_name) return(list())
+  full_table <- lapply(par_names, create_entry)
+  names(full_table) <- par_names
+  
+  ref_table <- ref_vary_table()
+  
+  for(par_name in par_names) {
+    for(group_name in group_names) {
+      full_table[[par_name]][[group_name]] = ref_table[[par_name]]
+    }
+  }
+  
+  cat(toJSON(full_table, pretty = T), file = vary_table_filename)
+  
+  cat("Done\n")
+  
+  cat("Variation table saved to:", vary_table_filename, "\n")
+}
+
+ref_vary_table <- function() {
   
   cycle_0.1_to_0.9 <- seq(0,1,0.1)
   cycle_disease <- seq(0.1,0.6,0.1)
@@ -98,20 +105,43 @@ make_vary_table <- function() {
 }
 
 if(sys.nframe()==0) {
-  library(jsonlite)
+
   library(googlesheets)
+  library(jsonlite)
   suppressMessages(library(dplyr))
+
+  #----------------------------------------------------------------------------
+  # Temporarily switch directory to scripts, source everything and read config
   
   called_from <- getwd()
   full_cmds <- commandArgs(trailingOnly = F)
   scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
   setwd(scripts_dir)
-  source("build_scripts_utilities.R")
   
-  set_wd_to_scripts()
   filenames <- fromJSON("_file_index.json")
-  source(filenames$scripts['helper_functions'])
+  script_names <- paste0(
+    filenames$scripts, ".", filenames$script_ext
+  )
+  sapply(script_names, source)
   
-  build_def_estimates()
+  estimates_data_name <- paste0(
+    filenames$default_ind, filenames$shared_data, ".",filenames$data_ext
+  )
+  def_data <- read.csv(
+    file.path(
+      filenames$default_folder, 
+      estimates_data_name
+    )
+  )
+  
+  setwd(called_from)
+  
+  #----------------------------------------------------------------------------
+  
+  group_names <- names(select(def_data, -Description, -Parameter))
+  par_names <- def_data[["Parameter"]]
+  par_names <- par_names[par_names != "prop"]
+  
+  build_def_vary_table(filenames, group_names, par_names)
 }
 
