@@ -1,4 +1,18 @@
 {
-  "sens_vac": ["beta", 2, 2],
-  "spec_vac": ["beta", 3, 3]
+  "sens_vac": {
+    "special_no": ["beta", 2, 2],
+    "special_sens": [0.7, 0.8, 0.9],
+    "special_spec": ["beta", 72, 2],
+    "children": ["beta", 2, 2],
+    "adults": ["beta", 2, 2],
+    "elderly": ["beta", 2, 2]
+  },
+  "spec_vac": {
+    "special_no": [0.7, 0.8, 0.9],
+    "special_sens": [0.7, 0.8, 0.9],
+    "special_spec": [0.7, 0.8, 0.9],
+    "children": [0.7, 0.8, 0.9],
+    "adults": [0.7, 0.8, 0.9],
+    "elderly": [0.7, 0.8, 0.9]
+  }
 }
