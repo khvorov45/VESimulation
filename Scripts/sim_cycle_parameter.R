@@ -4,6 +4,10 @@
 
 sim_cycle_parameter <- function(pop_est, settings) {
   
+  stop("uniplemented")
+  # TO DO:
+  # Account for pop_est being a list
+
   # Go here when there is nothing left to vary
   if(length(settings$to_vary) == 0) {
     
@@ -30,8 +34,6 @@ sim_cycle_parameter <- function(pop_est, settings) {
   par_group_values <- par_group_values[
     names(par_group_values) %in% settings$vary_in_group
   ]
-
-  # SET FUNCTIONS??? Probably do so beforehand
 
   par_group_values <- as.data.frame(par_group_values)
   value_count <- nrow(par_group_values)

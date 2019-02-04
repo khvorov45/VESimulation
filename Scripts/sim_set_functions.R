@@ -17,58 +17,20 @@ sim_set_functions <- function(pop_est, settings) {
     return(mod_base)
   }
 
-  assign_rfun <- function(pop_est_row) {
-    #print(pop_est_row)
-    print(rownames(pop_est_row))
-    return(pop_est_row)
-  }
-
-  #print(settings$to_vary)
-
-  # CONVERT TO LIST
-  par_names <- rownames(pop_est)
-  print(par_names)
-
-  pop_est <- as.list(pop_est)
-  print(pop_est)
-  stop("enough")
-
   for(variant_name in names(settings$to_vary)) {
-    for(group_name in names(settings$to_vary[[variant_name]])) {
-      if (
-        settings$to_vary[[variant_name]][[group_name]][1] %in% names(func_dic)
-      ) {
-        pop_est[variant_name , group_name] <- get_rfun(
-          settings$to_vary[[variant_name]][[group_name]]
-        )
+    for(group_name in settings$vary_in_group) {
+      vary_info <- settings$to_vary[[variant_name]][[group_name]]
+      if(!is.numeric(vary_info[1])) {
+        if(vary_info[1] %in% names(func_dic)) {
+          pop_est[[variant_name]][[group_name]] <- get_rfun(vary_info)
+          settings$to_vary[[variant_name]][[group_name]] <- NULL
+        } else stop("don't know ", vary_info[1], " distribution")
       }
     }
-  }
-
-  print(pop_est)
-  stop("enough")
-
-  pop_est[ , ]
-
-  assign_rfun_group <- function(group) {
-    if(!is.numeric(group[1])) {
-      if(group[1] %in% names(func_dic)) {
-        return(get_rfun(group))
-      }
-      stop("don't know ",group[1])
+    if(length(settings$to_vary[[variant_name]])==0) {
+      settings$to_vary[[variant_name]] <- NULL
     }
-    return(group)
   }
-
-  assign_rfun_var <- function(variant) {
-    variant <- lapply(variant, assign_rfun_group)
-    return(variant)
-  }
-
-  settings$to_vary <- lapply(settings$to_vary, assign_rfun_var)
-
-  print(pop_est)
-  stop("enough")
 
   data <- sim_cycle_parameter(pop_est, settings)
 

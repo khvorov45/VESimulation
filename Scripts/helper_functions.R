@@ -149,8 +149,16 @@ format_estimates_init <- function(estimates_og, group) {
   # Format p_test_ari:
   n_groups <- ncol(pop_est)
   if(n_groups == 1) pop_est["p_test_ari" , ] <- 1
+
+  # Convert to list:
+  make_list <- function(par_name) {
+    par_vec <- pop_est[par_name , ] %>% unlist() %>% as.list()
+    return(par_vec)
+  }
+  pop_est_list <- lapply(rownames(pop_est), make_list)
+  names(pop_est_list) <- rownames(pop_est)
   
-  return(pop_est)
+  return(pop_est_list)
 }
 
 format_estimates_final <- function(pop_est, nsam) {
@@ -233,7 +241,17 @@ build_settings <- function(
   settings$to_vary <- vary_table[variant_names]
   settings$vary_in_group <- vary_in_group
   settings$save_locs <- get_save_locs(
-    folder, group, variant_names, settings$vary_in_group, scripts_dir)
+    folder, group, variant_names, settings$vary_in_group, scripts_dir
+  )
+
+  # Reduce the vary table further:
+  for(variant_name in names(settings$to_vary)) {
+    for(group_name in names(settings$to_vary[[variant_name]])) {
+      if (!(group_name %in% settings$vary_in_group)) {
+        settings$to_vary[[variant_name]][[group_name]] <- NULL
+      }
+    }
+  }
   
   return(settings)
 }
