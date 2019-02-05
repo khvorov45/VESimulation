@@ -1,5 +1,5 @@
 {
 	"nsam" : 10000,
-	"Npop" : 10,
+	"Npop" : 1000,
 	"vary_rule" : ["sens_vac","spec_vac"]
 }

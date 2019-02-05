@@ -7,12 +7,12 @@ sim_set_functions <- function(pop_est, settings) {
   func_dic <- list("beta" = rbeta)
 
   get_rfun <- function(group) {
-    # Hope everything has exactly 2 parameters for now
+    # Hope everything has exactly 2 parameters
     fun_base <- func_dic[[group[1]]]
     par1 <- as.numeric(group[2])
     par2 <- as.numeric(group[3])
-    mod_base <- function() {
-      return(fun_base(1,par1,par2))
+    mod_base <- function(n) {
+      return(fun_base(n,par1,par2))
     }
     return(mod_base)
   }

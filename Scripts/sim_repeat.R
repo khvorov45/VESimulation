@@ -2,15 +2,25 @@
 # Will repeatedly simulate a population and return averages
 #------------------------------------------------------------------------------
 
-sim_repeat <- function(estimates, Npop, par_log) {
+sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
   
   cat("Parallel execution log:\n\n", file = par_log)
   
-  # To deal with dopar's nonsense:
   called_from <- getwd()
-  full_cmds <- commandArgs(trailingOnly = F)
-  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
-  
+
+  gen_num <- function(el,n) {
+    # Hope it's a closure if not numeric
+    if(is.numeric(el)) return(el)
+    else return(el(n))
+  }
+
+  gen_num_par <- function(par_entry, n) {
+    par_entry_new <- lapply(par_entry, gen_num, n)
+    return(par_entry_new)
+  }
+
+  pop_est <- lapply(pop_est, gen_num_par, Npop)
+
   pop_many <- foreach(i = 1:Npop, .combine = rbind) %dopar% {
     
     library(dplyr)
@@ -20,18 +30,24 @@ sim_repeat <- function(estimates, Npop, par_log) {
     source("sim_pop.R")
     source("sim_pop_group.R")
     setwd(called_from)
-	
-    pop <- sim_pop(estimates)
+    
+    pop_est_partial <- pop_est
+    for(par_name in names(pop_est)) {
+      for(group_name in names(pop_est[[par_name]])) {
+        element <- pop_est[[par_name]][[group_name]]
+        if(length(element) > 1) {
+          pop_est_partial[[par_name]][[group_name]] <- element[i]
+        }
+      }
+    }
+    
+    pop <- sim_pop(pop_est_partial)
     
     pop$run <- i
     
-    cat(i, "\n", file = par_log, append = T)
+    cat(i, " ", sep="", file = par_log, append = T)
     
     return(pop)
   }
-  
-  pop_avg <- take_averages(pop_many)
-  pop_avg$VE_true <- get_true_VE(estimates)
-  
-  return(pop_avg)
+  return(pop_many)
 }

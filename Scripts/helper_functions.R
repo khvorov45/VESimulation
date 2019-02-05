@@ -33,21 +33,29 @@ narrow_group <- function(all_estimates, groups) {
 # Summarises a population group
 #------------------------------------------------------------------------------
 
-su_pop_group <- function(df_group, group_name) {
+su_pop_group <- function(df_group, group_name, parameters) {
   
   summary <- data.frame("type" = c("surveillance","administrative"))
   
   #----------------------------------------------------------------------------
   
-  summary$case_vac[summary$type == "surveillance"] <- 
-    sum(df_group$vac_mes == 1 & df_group$testout == 1 & df_group$clin == 1, na.rm = T)
-  summary$case_unvac[summary$type == "surveillance"] <- 
-    sum(df_group$vac_mes == 0 & df_group$testout == 1 & df_group$clin == 1, na.rm = T)
+  summary$case_vac[summary$type == "surveillance"] <- sum(
+    df_group$vac_mes == 1 & df_group$testout == 1 & 
+    df_group$clin == 1, na.rm = T
+  )
+  summary$case_unvac[summary$type == "surveillance"] <- sum(
+    df_group$vac_mes == 0 & df_group$testout == 1 & 
+    df_group$clin == 1, na.rm = T
+  )
   
-  summary$cont_vac[summary$type == "surveillance"] <- 
-    sum(df_group$vac_mes == 1 & df_group$testout == 0 & df_group$clin == 1, na.rm = T)
-  summary$cont_unvac[summary$type == "surveillance"] <- 
-    sum(df_group$vac_mes == 0 & df_group$testout == 0 & df_group$clin == 1, na.rm = T)
+  summary$cont_vac[summary$type == "surveillance"] <- sum(
+    df_group$vac_mes == 1 & df_group$testout == 0 & 
+    df_group$clin == 1, na.rm = T
+  )
+  summary$cont_unvac[summary$type == "surveillance"] <- sum(
+    df_group$vac_mes == 0 & df_group$testout == 0 & 
+    df_group$clin == 1, na.rm = T
+  )
   
   #----------------------------------------------------------------------------
   
@@ -62,18 +70,24 @@ su_pop_group <- function(df_group, group_name) {
     sum(df_group$vac_mes == 0 & df_group$testout == 0, na.rm = T)
   
   #----------------------------------------------------------------------------
-  
+
   summary$name <- group_name
-  
+
+  for(par_name in names(parameters)) {
+    summary[ , par_name] <- parameters[par_name]
+  }
+
   return(summary)
 }
 
-add_overall <- function(pop_summary) {
+add_overall <- function(pop_summary, par_names) {
+  to_sum <- c("case_vac","case_unvac","cont_vac","cont_unvac","prop","nsam")
+  to_av <- par_names[!(par_names %in% c("prop","nsam"))]
   pop_summary_overall <- pop_summary %>% 
-      group_by(type) %>% 
-      summarise(case_vac = sum(case_vac), case_unvac = sum(case_unvac),
-                cont_vac = sum(cont_vac), cont_unvac = sum(cont_unvac)) %>% 
-      mutate(name = "overall")
+    mutate_at(vars(to_av),funs(.*prop)) %>%
+    group_by(type) %>% 
+    summarise_at(vars(to_sum, to_av),funs(sum)) %>% 
+    mutate(name = "overall")
   pop_summary_overall <- rbind(pop_summary, pop_summary_overall)
   return(pop_summary_overall)
 }
@@ -84,12 +98,11 @@ add_overall <- function(pop_summary) {
 #------------------------------------------------------------------------------
 
 calc_useful <- function(summary) {
-  
   calcs <- summary %>% 
-    mutate(VE_est = 1 - (case_vac/case_unvac) / (cont_vac/cont_unvac),
-           n_study = case_vac + cont_unvac + case_unvac + cont_vac) %>% 
-    select(type, VE_est, n_study, name)
-  
+    mutate(
+      VE_est = 1 - (case_vac/case_unvac) / (cont_vac/cont_unvac),
+      n_study = case_vac + cont_unvac + case_unvac + cont_vac
+    )
   return(calcs)
 }
 
@@ -146,30 +159,33 @@ format_estimates_init <- function(estimates_og, group) {
   rownames(pop_est) <- pop_est[ , "parameter"]
   pop_est <- select(pop_est, -parameter)
   
-  # Format p_test_ari:
+  # Format p_test_ari and prop:
   n_groups <- ncol(pop_est)
-  if(n_groups == 1) pop_est["p_test_ari" , ] <- 1
+  if(n_groups == 1) {
+    pop_est["p_test_ari" , ] <- 1
+    pop_est["prop" , ] <- 1
+  } 
 
   # Convert to list:
-  make_list <- function(par_name) {
-    par_vec <- pop_est[par_name , ] %>% unlist() %>% as.list()
-    return(par_vec)
+  pop_est_list <- list()
+  for(par_name in rownames(pop_est)) {
+    pop_est_list[[par_name]] <- list()
+    for(group_name in names(pop_est)) {
+      pop_est_list[[par_name]][[group_name]] <- pop_est[par_name, group_name]
+    }
   }
-  pop_est_list <- lapply(rownames(pop_est), make_list)
-  names(pop_est_list) <- rownames(pop_est)
-  
   return(pop_est_list)
 }
 
 format_estimates_final <- function(pop_est, nsam) {
-  
-  # Format p_test_nonari:
-  pop_est["p_test_nonari" , ] <- 
-    pop_est["p_test_nonari" , ] * pop_est["p_test_ari" , ]
 
   # Add nsam here:
-  pop_est["prop" , ] <- normalise_prop(pop_est["prop" , ])
-  pop_est["nsam" , ] <- find_start_size(pop_est["prop" , ], nsam)
+  pop_est[["nsam"]] <- list()
+  # Hope prop attribute isn't wierd
+  groups <- names(pop_est[["prop"]])
+  for(group in groups) {
+    pop_est[["nsam"]][[group]] <- pop_est[["prop"]][[group]]*nsam
+  }
   
   return(pop_est)
 }
@@ -252,7 +268,7 @@ build_settings <- function(
       }
     }
   }
-  
+  settings$scripts_dir <- scripts_dir
   return(settings)
 }
 

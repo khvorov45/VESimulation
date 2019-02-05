@@ -1,6 +1,6 @@
 {
   "sens_vac": {
-    "special_no": ["beta", 2, 2],
+    "special_no": ["beta", 3, 3],
     "special_sens": [0.7, 0.8, 0.9],
     "special_spec": ["beta", 2, 2],
     "children": ["beta", 2, 2],
@@ -8,7 +8,7 @@
     "elderly": ["beta", 2, 2]
   },
   "spec_vac": {
-    "special_no": [0.7, 0.8, 0.9],
+    "special_no": ["beta", 3, 3],
     "special_sens": [0.7, 0.8, 0.9],
     "special_spec": [0.7, 0.8, 0.9],
     "children": [0.7, 0.8, 0.9],

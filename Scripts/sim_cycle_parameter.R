@@ -3,10 +3,6 @@
 #------------------------------------------------------------------------------
 
 sim_cycle_parameter <- function(pop_est, settings) {
-  
-  stop("uniplemented")
-  # TO DO:
-  # Account for pop_est being a list
 
   # Go here when there is nothing left to vary
   if(length(settings$to_vary) == 0) {
@@ -19,8 +15,11 @@ sim_cycle_parameter <- function(pop_est, settings) {
     double_print(pop_est, file = settings$save_locs$full_log, FALSE)
     double_cat("\n", file = settings$save_locs$full_log, FALSE)
 	
-    data <- sim_repeat(pop_est, settings$Npop, settings$save_locs$parallel_log)
-	
+    data <- sim_repeat(
+      pop_est, settings$Npop, settings$save_locs$parallel_log, 
+      settings$scripts_dir
+    )
+
     return(data)
   }
   
@@ -30,34 +29,30 @@ sim_cycle_parameter <- function(pop_est, settings) {
   settings$to_vary <- settings$to_vary[-1]
 
   par_name <- names(variant_used)
-  par_group_values <- variant_used[[1]]
-  par_group_values <- par_group_values[
-    names(par_group_values) %in% settings$vary_in_group
-  ]
-
-  par_group_values <- as.data.frame(par_group_values)
-  value_count <- nrow(par_group_values)
+  group_names <- names(variant_used[[par_name]])
+  
+  # Hope every group has the same length of values
+  value_count <- length(variant_used[[par_name]][[group_names[1]]])
   
   data_complete <- data.frame()
   
-  for(ind in 1:value_count) {
+  for(ind_par in 1:value_count) {
     
-    pop_est[par_name , settings$vary_in_group] <- par_group_values[ind , ]
-    
-	  double_cat(
-      paste(
-        "set", names(variant_used), "to", 
-        paste0(par_group_values[ind , ],collapse=' '), 
-        "\n"
-      ), 
-	    file = settings$save_locs$full_log
-    ) 
+    for(group_name in group_names) {
+      pop_est[[par_name]][[group_name]] <- 
+        variant_used[[par_name]][[group_name]][ind_par]
+      double_cat(
+        paste(
+          "set", par_name, "in group", group_name, "to", 
+          variant_used[[par_name]][[group_name]][ind_par], 
+          "\n"
+        ), 
+	      file = settings$save_locs$full_log
+      )
+    }
+
     data <- sim_cycle_parameter(pop_est, settings)
 
-    data[
-      data$name %in% settings$vary_in_group, par_name
-    ] <- par_group_values[ind , ]
-    
     data_complete <- rbind(data_complete, data)
   }
   
