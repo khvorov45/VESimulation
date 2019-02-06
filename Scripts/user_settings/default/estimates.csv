@@ -10,5 +10,5 @@ p_sympt_ari,1,1,1,0.84,0.84,0.84,Probability of the ARI being symptomatic
 p_clin_ari,1,1,1,1,0.4,1,Relative probability of being clinically assessed as having ARI when it is symptomatic
 p_test_ari,1,1,1,0.49,1,0.64,Relative tested probability for clinically assessed ARI
 p_test_nonari,1,1,1,1,1,1,Relative tested probability for everyone without clinically assessed ARI
-sens,1,0.95,1,0.86,0.86,0.86,Sensitivity of influenza test
-spec,1,1,0.95,0.984,0.984,0.984,Specificity of influenza test
+sens_flu,1,0.95,1,0.86,0.86,0.86,Sensitivity of influenza test
+spec_flu,1,1,0.95,0.984,0.984,0.984,Specificity of influenza test

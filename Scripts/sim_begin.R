@@ -16,7 +16,8 @@ sim_begin <- function(
 
   verify_settings(settings, user_profile$user_data)
   
-  cat("",file = settings$save_locs$full_log) # Log file create & clear
+  # Log file create & clear:
+  cat(as.character(Sys.time()),"\n\n",file = settings$save_locs$full_log) 
   
   #----------------------------------------------------------------------------
   

@@ -82,6 +82,13 @@ run_user_profile <- function(
 if(sys.nframe()==0) {
   options("scipen"=100) # For printing in non-scientific
   
+  stop("libraries not figured out")
+  
+  # R_LIBS_USER is different depending on call context
+  print(Sys.getenv("R_LIBS_USER"))
+  
+  .libPaths(Sys.getenv("R_LIBS_USER"))
+  
   suppressMessages(library(dplyr))
   suppressMessages(library(doParallel))
   suppressMessages(library(jsonlite))

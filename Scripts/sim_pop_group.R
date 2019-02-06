@@ -63,10 +63,10 @@ sim_pop_group <- function(parameters) {
   tested[clin==0] <- rbinom(sum(clin==0), 1, parameters["p_test_nonari"]) 
   
   testout[(tested==1) & (flu==1)] <- rbinom(
-    sum((tested==1) & (flu==1)), 1, parameters["sens"]
+    sum((tested==1) & (flu==1)), 1, parameters["sens_flu"]
   )
   testout[(tested==1) & (flu==0)] <- rbinom(
-    sum((tested==1) & (flu==0)), 1, 1-parameters["spec"]
+    sum((tested==1) & (flu==0)), 1, 1-parameters["spec_flu"]
   )
   
   pop <- data.frame(vac_true,vac_mes,flu,nonflu,ari,sympt,clin,tested,testout)

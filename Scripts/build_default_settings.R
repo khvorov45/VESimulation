@@ -1,46 +1,36 @@
-# Isn't ready
+#------------------------------------------------------------------------------
+# Builds the default settings found in default folder. 
+# Will place the files wherever it is called from.
+#------------------------------------------------------------------------------
 
 build_def_estimates <- function(filenames) {
   
-  estimates_filename <- paste0(filenames$default_ind, filenames$estimates)
-  estimates_filepath <- file.path(filenames$default_folder, estimates_filename)
+  estimates_filename <- paste0(
+    filenames$default_ind, filenames$shared_data, '.', filenames$data_ext
+  )
   
   cat("\nRefreshing estimates... ")
   estimates <- read_from_gs("Estimates","Table", skip = 1)
-  write.csv(estimates, estimates_filepath, row.names = F)
+  write.csv(estimates, estimates_filename, row.names = F)
   cat("Done\n")
   
-  cat("Estimates table saved to:", estimates_filepath, "relative to main folder\n")
-  setwd(called_from)
+  cat("Estimates table saved to:", estimates_filename, "\n")
 }
 
-build_def_groups <- function(file_index_loc = "_file_index.json") {  
-  called_from <- getwd()
-  full_cmds <- commandArgs(trailingOnly = F)
-  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
-  setwd(scripts_dir)
-  source("build_scripts_utilities.R")
+build_def_groups <- function(filenames) { 
+  def_data <- read_def_est(filenames)
   
-  set_wd_to_scripts()
-  filenames <- fromJSON(file_index_loc)
-  source(filenames$helper_functions)
-  
-  def_estimates_filename <- paste0(filenames$default_ind, filenames$estimates)
-  def_estimates_path <- file.path(filenames$default_folder, def_estimates_filename)
-  def_estimates <- read.csv(def_estimates_path)
-  
-  allowed_groups_filename <- paste0(filenames$default_ind, filenames$allowed_groups)
-  allowed_groups_filepath <- file.path(filenames$default_folder, allowed_groups_filename)
-  
+  allowed_groups_filename <- paste0(
+    filenames$default_ind, "allowed_groups", '.', filenames$config_ext
+  )
+
   cat("\nRefreshing allowed groups list... ")
-  allowed_groups <- get_clean_colnames(def_estimates)
-  allowed_groups <- allowed_groups[!(allowed_groups %in% c("parameter","description"))]
-  cat(toJSON(allowed_groups, pretty = T), file = allowed_groups_filepath)
+  groups <- names(select(def_data, -Parameter, -Description))
+  allowed_groups <- standardise_names(groups)
+  cat(toJSON(allowed_groups, pretty = T), file = allowed_groups_filename)
   cat("Done\n")
   
-  cat("Allowed groups saved to:", allowed_groups_filepath, "in scripts folder\n")
-  
-  setwd(called_from)
+  cat("Allowed groups saved to:", allowed_groups_filename, "\n")
 }
 
 read_from_gs <- function(filename, sheetname, skip = 0) {
@@ -51,7 +41,12 @@ read_from_gs <- function(filename, sheetname, skip = 0) {
   return(df)
 }
 
-build_def_vary_table <- function(filenames, group_names, par_names) {
+build_def_vary_table <- function(filenames) {
+
+  def_data <- read_def_est(filenames)
+  group_names <- names(select(def_data, -Description, -Parameter))
+  par_names <- def_data[["Parameter"]]
+  par_names <- par_names[par_names != "prop"]
   
   group_names <- standardise_names(group_names)
   
@@ -59,7 +54,7 @@ build_def_vary_table <- function(filenames, group_names, par_names) {
     filenames$default_ind, "vary_table", ".", filenames$config_ext
   )
   
-  cat("Refreshing variation table... ")
+  cat("\nRefreshing variation table... ")
   
   
   create_entry <- function(par_name) return(list())
@@ -98,10 +93,19 @@ ref_vary_table <- function() {
     "p_clin_ari" = cycle_0.1_to_0.9,
     "p_test_ari" = cycle_0.1_to_0.9,
     "p_test_nonari" = cycle_0.1_to_0.9,
-    "sens" = cycle_test,
-    "spec" = cycle_test)
+    "sens_flu" = cycle_test,
+    "spec_flu" = cycle_test
+  )
   
   return(vary_table)
+}
+
+read_def_est <- function(filenames) {
+  estimates_data_name <- paste0(
+    filenames$default_ind, filenames$shared_data, ".",filenames$data_ext
+  )
+  def_data <- read.csv(estimates_data_name)
+  return(def_data)
 }
 
 if(sys.nframe()==0) {
@@ -124,24 +128,11 @@ if(sys.nframe()==0) {
   )
   sapply(script_names, source)
   
-  estimates_data_name <- paste0(
-    filenames$default_ind, filenames$shared_data, ".",filenames$data_ext
-  )
-  def_data <- read.csv(
-    file.path(
-      filenames$default_folder, 
-      estimates_data_name
-    )
-  )
-  
   setwd(called_from)
   
   #----------------------------------------------------------------------------
   
-  group_names <- names(select(def_data, -Description, -Parameter))
-  par_names <- def_data[["Parameter"]]
-  par_names <- par_names[par_names != "prop"]
-  
-  build_def_vary_table(filenames, group_names, par_names)
+  build_def_estimates(filenames)
+  build_def_groups(filenames)
+  build_def_vary_table(filenames)
 }
-

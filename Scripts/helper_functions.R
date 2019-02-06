@@ -197,7 +197,7 @@ get_group_parameters <- function(pop_est, group_name) {
 }
 
 standardise_names <- function(all_names) {
-  st_names <- gsub("[.]|[[:digit:]]", '', all_names)
+  st_names <- gsub("[.]|[[:digit:]]|[)]|[(]", '', all_names)
   st_names <- tolower(st_names)
   return(st_names)
 }
@@ -487,6 +487,7 @@ register_par <- function() {
   cat(paste("Registering parallel backend with", n_cores, "cores... "))
   cl <- makeCluster(n_cores)
   registerDoParallel(cl)
+  clusterEvalQ(cl, .libPaths("C:\\Users\\khvorov25\\Documents\\R\\win-library\\3.5"))
   cat("Done\n")
 }
 
