@@ -487,7 +487,9 @@ register_par <- function() {
   cat(paste("Registering parallel backend with", n_cores, "cores... "))
   cl <- makeCluster(n_cores)
   registerDoParallel(cl)
-  clusterEvalQ(cl, .libPaths("C:\\Users\\khvorov25\\Documents\\R\\win-library\\3.5"))
+
+  clusterEvalQ(cl, source("fix_lib_path.R"))
+  clusterEvalQ(cl, fix_lib_path())
   cat("Done\n")
 }
 

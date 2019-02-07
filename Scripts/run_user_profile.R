@@ -81,18 +81,7 @@ run_user_profile <- function(
 
 if(sys.nframe()==0) {
   options("scipen"=100) # For printing in non-scientific
-  
-  stop("libraries not figured out")
-  
-  # R_LIBS_USER is different depending on call context
-  print(Sys.getenv("R_LIBS_USER"))
-  
-  .libPaths(Sys.getenv("R_LIBS_USER"))
-  
-  suppressMessages(library(dplyr))
-  suppressMessages(library(doParallel))
-  suppressMessages(library(jsonlite))
-  
+
   #----------------------------------------------------------------------------
   # Temporarily switch directory to scripts, source everything and read config
   
@@ -100,13 +89,19 @@ if(sys.nframe()==0) {
   full_cmds <- commandArgs(trailingOnly = F)
   scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
   setwd(scripts_dir)
+  source("fix_lib_path.R")
+  fix_lib_path()
+
+  suppressMessages(library(dplyr))
+  suppressMessages(library(doParallel))
+  suppressMessages(library(jsonlite))
   
   filenames <- fromJSON("_file_index.json")
   script_names <- paste0(
     filenames$scripts, ".", filenames$script_ext
   )
   sapply(script_names, source)
-  
+
   default_config <- read_config(filenames, default = TRUE)
   
   processed_args <- process_args(
@@ -124,12 +119,10 @@ if(sys.nframe()==0) {
       estimates_data_name
     )
   )
-  
+  register_par()
   setwd(called_from)
   
   #----------------------------------------------------------------------------
-  
-  register_par()
 
   run_user_profile(
     processed_args$save_directory, user_profile, default_config, scripts_dir
