@@ -206,13 +206,14 @@ standardise_names <- function(all_names) {
 # Take averages from many runs of the same population
 #------------------------------------------------------------------------------
 
-take_averages <- function(pop_many) {
+take_averages <- function(pop_many, variants) {
   
   pop_avg <- pop_many %>% 
-    group_by(name, type) %>% 
+    mutate(VE_true = VE) %>%
+    group_by_at(vars(c(variants, "name", "type", "VE_true"))) %>%
     summarise(VE_est_mean = mean(VE_est), VE_est_sd = sd(VE_est), 
               n_study_mean = mean(n_study)) %>% 
-    ungroup(name)
+    ungroup()
   
   return(pop_avg)
 }
@@ -231,9 +232,21 @@ get_true_VE <- function(pop_est) {
 #------------------------------------------------------------------------------
 
 get_varied <- function(df, possibilities) {
-  nms <- names(df)
-  nms <- nms[nms %in% possibilities]
+  nms_all <- names(df)
+  nms_all <- nms_all[nms_all %in% possibilities]
+  is_varied <- function(col) {
+    if (length((unique(col))) > 1) return(TRUE)
+    else return(FALSE)
+  }
+  varied <- sapply(df[ , nms_all], is_varied)
+  nms <- names(varied)[varied]
   return(nms)
+}
+
+is_fixed_var <- function(df, varied) {
+  df <- unique(df[ , c("run", varied)])
+  if(df$run[nrow(df)] == nrow(df)) return(FALSE)
+  return(TRUE)
 }
 
 #------------------------------------------------------------------------------

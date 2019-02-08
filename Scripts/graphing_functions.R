@@ -2,14 +2,53 @@
 # Base graph for 1 varied parameter
 #------------------------------------------------------------------------------
 
+graph_fixed_var <- function(
+  df, descriptions, errors, sample_size, varied, ylims,
+  save_directory, graph_filename
+) {
+  x_axis <- varied[1]
+  if(x_axis == "p_test_ari") varied <- varied[varied != "p_test_nonari"]
+  
+  if(length(varied)>1) {
+    facet_variable <- varied[2]
+  } else facet_variable <- NULL
+  
+  y_axis <- "VE_est_mean"
+  
+  save_units <- "in"
+  
+  cat("Graphing",x_axis,"on x;",y_axis,"on y")
+  
+  if (!is.null(facet_variable)) {
+    cat("; faceting by", facet_variable,"\n")
+  } else { cat("\n") }
+
+  pl <- graph_base_1(
+    df, descriptions, errors, sample_size, x_axis, y_axis, ylims
+  )
+  
+  if (!is.null(facet_variable)) {
+    pl <- add_facets(pl,facet_variable)
+    save_dimensions = c(10,10)
+  } else {
+    save_dimensions <- c(7,4)
+  }
+  filename = file.path(save_directory,graph_filename)
+  ggsave(pl, 
+        filename = filename, 
+        units=save_units, 
+        width = save_dimensions[1], height = save_dimensions[2])
+  cat("saved to",filename,"\n")
+}
+
 graph_base_1 <- function(
   df, descriptions, errors, sample_size, x, y, ylims=c(NA,NA)
 ) {
   x_name <- descriptions[x]
-  
+
   pl <- ggplot(
     data = df, 
-    mapping = aes(x = df[ , x], y = df[ , y])
+    mapping = aes_string(x = x, y = y)
     ) + theme_bw() + 
     
     geom_hline(
