@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 
 graph_fixed_var <- function(
-  df, descriptions, errors, sample_size, varied, ylims,
-  save_directory, graph_filename
+  df, varied, descriptions, errors, sample_size, ylims, graph_save_dir, 
+  graph_device
 ) {
   x_axis <- varied[1]
   if(x_axis == "p_test_ari") varied <- varied[varied != "p_test_nonari"]
@@ -33,12 +33,73 @@ graph_fixed_var <- function(
   } else {
     save_dimensions <- c(7,4)
   }
-  filename = file.path(save_directory,graph_filename)
+
+  save_graph(
+    pl, graph_save_dir, graph_device, save_units, save_dimensions
+  )
+}
+
+save_graph <- function(
+  pl, filename, graph_device, save_units, save_dimensions
+) {
   ggsave(pl, 
-        filename = filename, 
+        filename = paste0(filename, '.', graph_device),
+        device =  graph_device,
         units=save_units, 
         width = save_dimensions[1], height = save_dimensions[2])
   cat("saved to",filename,"\n")
+}
+
+graph_prob_var <- function(
+  df, varied, descriptions, graph_save_dir, graph_device
+) {
+  save_dimensions <- c(6,6)
+  save_units <- "in"
+  for (var in varied) {
+    cat("graphing",var,"\n")
+    gr <- graph_prob_unit(df, var, descriptions[var])
+    save_graph(
+      gr, paste0(graph_save_dir,"--",var), graph_device, 
+      save_units, save_dimensions
+    )
+  }
+}
+
+graph_prob_unit <- function(df, var, desc) {
+  
+  # Frequency of the varied parameter
+  freq <- ggplot(df, aes(x=get(var), y = stat(density))) + theme_bw() +
+    geom_freqpoly(binwidth = 0.01) + xlab(desc)
+  
+  # Scatter of VE_est vs varied parameter
+  scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw() +
+    geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) +
+    geom_point() + 
+    xlab(desc) + ylab("VE estimated") +
+    facet_wrap(vars(type), nrow = 2) +
+    theme(
+      panel.spacing = unit(0,"lines"),
+      plot.margin = unit(c(0,1,1,1), "lines")
+    )
+
+  # Strippled polygon for marginal
+  freq_stripped <- freq +
+    theme(
+      panel.grid = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank(), 
+      axis.ticks.length = unit(0,"mm"),
+      axis.text = element_blank(),
+      plot.margin = unit(c(0,0,0,0),"lines")
+    )
+  
+  # Full graph
+  full <- ggarrange(
+    freq_stripped, scat,
+    ncol=1,nrow=2,align="v",heights=c(1,2)
+  )
+
+  return(full)
 }
 
 graph_base_1 <- function(

@@ -1,17 +1,17 @@
 {
   "sens_vac": {
-    "special_no": ["beta", 3, 3]
+    "special_no": ["beta", 10, 1]
   },
   "spec_vac": {
-    "special_no": ["beta", 3, 3]
-  },
-  "spec_flu": {
-    "special_no": ["beta", 3, 3]
+    "special_no": ["beta", 10, 1]
   },
   "sens_flu": {
-    "special_no": ["beta", 3, 3]
+    "special_no": ["beta", 10, 1]
+  },
+  "spec_flu": {
+    "special_no": ["beta", 10, 0.5]
   },
   "p_test_nonari": {
-    "special_no": ["beta", 3, 3]
+    "special_no": ["beta", 0.5, 10]
   }
 }

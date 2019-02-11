@@ -97,8 +97,8 @@ add_overall <- function(pop_summary, par_names) {
 # Caclulates VE and nsam for a group
 #------------------------------------------------------------------------------
 
-calc_useful <- function(summary) {
-  calcs <- summary %>% 
+calc_useful <- function(df_cc) {
+  calcs <- df_cc %>% 
     mutate(
       VE_est = 1 - (case_vac/case_unvac) / (cont_vac/cont_unvac),
       n_study = case_vac + cont_unvac + case_unvac + cont_vac
@@ -244,9 +244,17 @@ get_varied <- function(df, possibilities) {
 }
 
 is_fixed_var <- function(df, varied) {
-  df <- unique(df[ , c("run", varied)])
-  if(df$run[nrow(df)] == nrow(df)) return(FALSE)
-  return(TRUE)
+  len_un <- function(vec) length(unique(na.omit(vec)))>1
+  vec <- df %>% 
+    mutate(call = cumsum(run - lag(run, default=0) < 0) + 1) %>%
+    select_at(vars(c(varied,"call"))) %>%
+    group_by(call) %>%
+    summarise_all(funs(len_un)) %>%
+    select(-call) %>%
+    summarise_all(funs(any)) %>%
+    slice(1) %>%
+    unlist()
+  return(!any(vec))
 }
 
 #------------------------------------------------------------------------------
@@ -431,18 +439,21 @@ is_directory <- function(arg) {
 #------------------------------------------------------------------------------
 
 copy_info <- function(from, to) {
+
+  # Set up directories
   to_copy <- c("full_log","parameters_used","settings_used")
   start_dirs <- file.path(from, to_copy)
   end_dirs <- file.path(to, to_copy)
 
+  # Create directories
   end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
   start_f <- function(dir) {
-    if(!(dir.exists(dir))) stop("info folder(s) not found")
+    if(!(dir.exists(dir))) cat("info folder", dir, "not found\n")
   }
-
   lapply(start_dirs, start_f)
   lapply(end_dirs, end_f)
 
+  # Copy files
   ind <- 0
   for(dir in start_dirs) {
     ind <- ind+1

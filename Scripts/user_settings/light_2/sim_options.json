@@ -1,0 +1,5 @@
+{
+	"nsam" : 20000,
+	"Npop" : 10,
+	"vary_rule" : ["p_test_nonari","."]
+}
