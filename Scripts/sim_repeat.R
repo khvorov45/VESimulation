@@ -8,19 +8,19 @@ sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
   
   called_from <- getwd()
 
-  gen_num <- function(el,n) {
-    # Hope it's a closure if not numeric
+  # Generate the numbers for probabilistic variation
+  gen_num <- function(el) {
+    # Should be a closure if not numeric
     if(is.numeric(el)) return(el)
-    else return(el(n))
+    else return(el())
   }
-
-  gen_num_par <- function(par_entry, n) {
-    par_entry_new <- lapply(par_entry, gen_num, n)
+  gen_num_par <- function(par_entry) {
+    par_entry_new <- lapply(par_entry, gen_num)
     return(par_entry_new)
   }
-
-  pop_est <- lapply(pop_est, gen_num_par, Npop)
-
+  pop_est <- lapply(pop_est, gen_num_par)
+  
+  # Simulate many populations
   pop_many <- foreach(i = 1:Npop, .combine = rbind) %dopar% {
     
     library(dplyr)
@@ -31,6 +31,7 @@ sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
     source("sim_pop_group.R")
     setwd(called_from)
     
+    # Pick one of the randomly genrated numbers
     pop_est_partial <- pop_est
     for(par_name in names(pop_est)) {
       for(group_name in names(pop_est[[par_name]])) {

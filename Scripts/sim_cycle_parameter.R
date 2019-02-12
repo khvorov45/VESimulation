@@ -7,6 +7,7 @@ sim_cycle_parameter <- function(pop_est, settings) {
   # Go here when there is nothing left to vary
   if(length(settings$to_vary) == 0) {
     
+    # Do another format pass and log it
     pop_est <- format_estimates_final(pop_est, settings$nsam)
 	  double_cat(
       "estimates sent (final format):\n", 

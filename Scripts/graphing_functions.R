@@ -1,54 +1,6 @@
 #------------------------------------------------------------------------------
-# Base graph for 1 varied parameter
+# Probabilistic variation graphing
 #------------------------------------------------------------------------------
-
-graph_fixed_var <- function(
-  df, varied, descriptions, errors, sample_size, ylims, graph_save_dir, 
-  graph_device
-) {
-  x_axis <- varied[1]
-  if(x_axis == "p_test_ari") varied <- varied[varied != "p_test_nonari"]
-  
-  if(length(varied)>1) {
-    facet_variable <- varied[2]
-  } else facet_variable <- NULL
-  
-  y_axis <- "VE_est_mean"
-  
-  save_units <- "in"
-  
-  cat("Graphing",x_axis,"on x;",y_axis,"on y")
-  
-  if (!is.null(facet_variable)) {
-    cat("; faceting by", facet_variable,"\n")
-  } else { cat("\n") }
-
-  pl <- graph_base_1(
-    df, descriptions, errors, sample_size, x_axis, y_axis, ylims
-  )
-  
-  if (!is.null(facet_variable)) {
-    pl <- add_facets(pl,facet_variable)
-    save_dimensions = c(10,10)
-  } else {
-    save_dimensions <- c(7,4)
-  }
-
-  save_graph(
-    pl, graph_save_dir, graph_device, save_units, save_dimensions
-  )
-}
-
-save_graph <- function(
-  pl, filename, graph_device, save_units, save_dimensions
-) {
-  ggsave(pl, 
-        filename = paste0(filename, '.', graph_device),
-        device =  graph_device,
-        units=save_units, 
-        width = save_dimensions[1], height = save_dimensions[2])
-  cat("saved to",filename,"\n")
-}
 
 graph_prob_var <- function(
   df, varied, descriptions, graph_save_dir, graph_device
@@ -65,6 +17,7 @@ graph_prob_var <- function(
   }
 }
 
+# Graphs one variant against outcome
 graph_prob_unit <- function(df, var, desc) {
   
   # Frequency of the varied parameter
@@ -102,6 +55,51 @@ graph_prob_unit <- function(df, var, desc) {
   return(full)
 }
 
+#------------------------------------------------------------------------------
+# Fixed variation graphing
+#------------------------------------------------------------------------------
+
+graph_fixed_var <- function(
+  df, varied, descriptions, errors, sample_size, ylims, graph_save_dir, 
+  graph_device
+) {
+  
+  x_axis <- varied[1]
+  if(x_axis == "p_test_ari") varied <- varied[varied != "p_test_nonari"]
+
+  if (length(varied) > 2) stop("don't know how to graph more than 2 variants")
+
+  if (length(varied) > 1) {
+    facet_variable <- varied[2]
+  } else facet_variable <- NULL
+  
+  y_axis <- "VE_est_mean"
+  
+  cat("Graphing",x_axis,"on x;",y_axis,"on y")
+  
+  if (!is.null(facet_variable)) {
+    cat("; faceting by", facet_variable,"\n")
+  } else { cat("\n") }
+
+  pl <- graph_base_1(
+    df, descriptions, errors, sample_size, x_axis, y_axis, ylims
+  )
+  
+  if (!is.null(facet_variable)) {
+    pl <- add_facets(pl,facet_variable)
+    save_dimensions = c(10,10)
+  } else {
+    save_dimensions <- c(7,4)
+  }
+
+  save_units <- "in"
+
+  save_graph(
+    pl, graph_save_dir, graph_device, save_units, save_dimensions
+  )
+}
+
+# Base graph for 1 varied parameter
 graph_base_1 <- function(
   df, descriptions, errors, sample_size, x, y, ylims=c(NA,NA)
 ) {
@@ -182,14 +180,26 @@ graph_base_1 <- function(
   return(pl)
 }
 
-#------------------------------------------------------------------------------
 # Additional facets for two varied parameters
-#------------------------------------------------------------------------------
-
 add_facets <- function(pl, facet_variable) {
   
   pl_facets <- pl + 
     facet_wrap(c(facet_variable))
   
   return(pl_facets)
+}
+
+#------------------------------------------------------------------------------
+# Saves the graph
+#------------------------------------------------------------------------------
+
+save_graph <- function(
+  pl, filename, graph_device, save_units, save_dimensions
+) {
+  ggsave(pl, 
+        filename = paste0(filename, '.', graph_device),
+        device =  graph_device,
+        units=save_units, 
+        width = save_dimensions[1], height = save_dimensions[2])
+  cat("saved to",filename,"\n")
 }

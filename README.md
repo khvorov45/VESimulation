@@ -1,5 +1,7 @@
 # VE Simulation Documentation
 
+Date 12/02/2019
+
 ## Structure
 
 ### Script files overview
@@ -14,16 +16,34 @@ Each of the following functions resides in a .R script file named the same as th
 
 Can be ran from command line with arguments: `--save_directory` `mydir`  `--profile_name`  `myprof`
 
+Arguments:
+
+* `save_directory` - directory for data to be written in
+* `user_profile` - a list that is a direct result of reading the files in the profile folder:
+  * `user_data` - dataframe form of `estimates.csv`
+  * `allowed_groups` - all groups (names of parameter sets) to be used
+  * `sim_options` - a list:
+    * `nsam` - starting population size
+    * `Npop` - amount of populations to simulate
+    * `vary_rule` - rule to be used for parameter variation
+  * `vary_table` - table of values to be used for the parameters to be varied
+* `scripts_dir` - path to scripts directory
+
 Reads the profile (located in `user_settings`) and builds appropriate arguments for `sim_begin`. [Profile-based usage](#Profile-based-usage) section has more information on profiles.
 
 #### `sim_begin`
 
-Can be ran from the command line with arguments `--save_directory`  `mydir` `--group` `mygroup` `--variants` `variant1*` `--vary_in_group**` `group`
+Arguments:
 
-\* More variants can be specified \
-\*\* Optional argument
+* `sim_args` - a list of argumets:
+  * `group` - name of parameter set(s) in `estimates.csv` to use
+  * `save_directory` - directory for data to be saved
+  * `variants` - parameter(s) to vary (meaning that their values in `estimates.csv` are to be ignored and `vary_table` to be used instead)
+  * `vary_in_group` - optional argument. Parameters will only be varied in the groups specified. If left empty, parameters will be varied in all groups.
+* `user_profile` - same as `run_user_profile`
+* `scripts_dir` - path to scripts directory
 
-Builds arguments for `sim_main` and writes data that `sim_main` returns into a directory specified by the `--save_directory` argument. Also saves `settings` that it passes to `sim_main` to `settings_used` folder inside the save directory, saves estimates that it read to `parameters_used` folder inside the save directory and saves the full log of the simulation run to `full_log` folder inside the save directory.
+Builds arguments for `sim_main` and writes data that `sim_main` returns into the save directory. Also saves `settings` that it passes to `sim_main` to `settings_used` folder inside the save directory, saves estimates that it read to `parameters_used` folder inside the save directory and saves the full log of the simulation run to `full_log` folder inside the save directory.
 
 #### `sim_main`
 
@@ -38,41 +58,54 @@ Arguments:
   * `vary_in_group` - group in which the parameter will be varied according to `to_vary`. The other groups will be set to the values specified in `estimates`
   * `save_locs` - a list with save locations for data and log files
 
-Prints start message, builds arguments for `sim_cycle_parameter`, logs data returned. Does not change data returned by `sim_cycle_parameter` before returning it to `sim_begin`.
+Builds arguments for `sim_set_functions`. Does not change data returned by `sim_set_functions` before returning it to `sim_begin`.
+
+#### `sim_set_functions`
+
+Arguments:
+
+* `pop_est` - a list containing parameter values for every group. Those values come from `estimates.csv` with the following modifications:
+  * Group names are lowercased and free of garbage (such as dots or parentheses that can be there as an artefact of `read.csv` not reading some names properly)
+  * If there is only one group, `p_test_ari` and `prop` are set to 1
+* `settings` - same as `sim_main`
+
+Main purpose is to modify `pop_est` by replacing every every parameter/group entry with a function specified by the appropriate entry in `settigs$to_vary`. \
+For example, if `p_vac` is to be varied according to a beta distribution with parameters alpha = 3 and beta = 3 in group `special_no`, then the `pop_est` entry for `p_vac` (for group `special_no`) will be replaced by a callable object whose call (without arguments) will be equivalent to calling `rbeta(Npop, 3, 3)`. \
+Used entries in `settings$to_vary` are removed.
 
 #### `sim_cycle_parameter`
 
 Arguments:
 
-* `pop_est` - a dataframe containing parameter estimates of the group(s) that are to be simulated. Expected format:
-  * Only columns are groups
-  * Parameter names are rownames
-  * Column names are lowercased and free of garbage (such as dots or parentheses that can be there as an artefact of `read.csv` not reading some names properly)
-  * If there is only one group, `p_test_ari` is set to 1
+* `pop_est` - a list containing parameter values for every group.
 * `settings` - same as `sim_main`
 
-Main purpose is to modify `pop_est` by setting the appropriate rows to values specified by `to_vary`. Once it sets all listed parameters to one of their values it formats `pop_est` for `sim_repeat` and passes it. Once `sim_repeat` returns, if there are parameter value combinations still left to pass it does so and appends the returned data to the existing one. Once it returns to `sim_main` the data is ready to be written.
+Main purpose is to modify `pop_est` by setting the appropriate entries to values specified by `to_vary`. Once it sets all listed parameters to one of their values it formats `pop_est` for `sim_repeat` and passes it. Once `sim_repeat` returns, if there are parameter value combinations still left to pass it does so and appends the returned data to the existing one. Once it returns to `sim_main` the data is ready to be written.
 
 #### `sim_repeat`
 
 Arguments:
 
-* `estimates` - same as `pop_est` in `sim_cycle_parameter` with two changes:
-  * `p_test_nonari` is set to absolute probability (rather than one relative to `p_test_ari`). For example, if `p_test_ari` is 0.5 and `p_test_nonari` is 0.2, `p_test_nonari` is set to 0.1 (0.2*0.5).
-  * `nsam` row is added. If there is one group, this is the same as `nsam` in `settings`. If there are multiple, `prop` row is used to set `nsam` in groups so that the sum is equal to `nsam` in `settings` 
+* `pop_est` - same as in `sim_cycle_parameter` with one change:
+  * `nsam` entry is added. If there is one group, this is the same as `nsam` in `settings`. If there are multiple, `prop` entry is used to set `nsam` in groups so that the sum is equal to `nsam` in `settings` 
 * `Npop` - amount of times to repeat the simulation.
 * `par_log` - log file for loop execution.
 
-Main purpose is to call `sim_pop` many times and aggregate results that all those calls return.
+Main purpose is to call `sim_pop` many times and aggregate results that all those calls return. For fixed variation, the same value will be passed `Npop` times. For probabilistic variation, each population will get a different randomly generated value. That generation happens by calling functions set by `sim_set_functions`
 
 #### `sim_pop`
 
 Arguments:
 
-* `pop_est` - same as `estimates` in `sim_repeat`
+* `pop_est` - same as in `sim_repeat`
+
+Modifies `pop_est`:
+
+* Converts it to a dataframe
+* Modifies `p_test_nonari` - sets it to absolute probability (rather than one relative to `p_test_ari`). For example, if `p_test_ari` is 0.5 and `p_test_nonari` is 0.2, `p_test_nonari` is set to 0.1 (0.2*0.5).
 
 Simulates a full population. \
-Passes each row in `pop_est` to `sim_pop_group` as a named vector. Counts the amount of cases and controls from the data returned by `sim_pop_group`. If there are multiple groups, sums them to get overall counts. Then uses that to obtain VE estimates for each group (and the population overall if there are multiple groups). \
+Passes each column in modified `pop_est` to `sim_pop_group` as a named vector. Counts the amount of cases and controls from the data returned by `sim_pop_group`. If there are multiple groups, sums them to get overall counts. Then uses that to obtain VE estimates for each group (and the population overall if there are multiple groups). \
 Returns a dataframe with VE estimates and group names.
 
 #### `sim_pop_group`
@@ -138,7 +171,7 @@ A profile is a folder inside `user_settings` with files: `allowed_groups.json es
 
       Example: `[".", "p_test_nonari"]` means that all the parameters will be varied as per `vary_table.json` as well as `p_test_nonari`. Resulting data will have all combinations of possible `p_test_nonari` values with the possible values of every other parameter that appears in `vary_table.json`
 
-  * `vary_table.json` contains all values of the parameters to be used in simulations.
+  * `vary_table.json` contains all values of the parameters to be used in simulations. For probabilistic variation the entry should be: `["distribution_name", par1, par2]`, example: `["beta", 3, 3]`
 
 * Defining a profile
 

@@ -1,104 +1,75 @@
-#------------------------------------------------------------------------------
-# The script that will start all data generation
+ #------------------------------------------------------------------------------
+# THis function starts data generation
 #------------------------------------------------------------------------------
 
 sim_begin <- function(
-  sim_args, user_profile, default_config, scripts_dir
+  sim_args, user_profile, scripts_dir
 ) {
 
-  # Get settings:
-  args_processed <- process_args(sim_args, default_config$sim_usage)
-  
   settings <- build_settings(
-    args_processed, user_profile$sim_options, 
+    sim_args, user_profile$sim_options, 
     user_profile$vary_table, user_profile$allowed_groups, scripts_dir
   )
-
-  verify_settings(settings, user_profile$user_data)
   
   # Log file create & clear:
   cat(as.character(Sys.time()),"\n\n",file = settings$save_locs$full_log) 
-  
-  #----------------------------------------------------------------------------
-  
+
   estimates <- user_profile$user_data
   
-  # Print/log estimates read:
+  # Log estimates read
   double_cat("Read:\n", file = settings$save_locs$full_log, FALSE)
   double_print(estimates, file=settings$save_locs$full_log, FALSE)
   double_cat("\n", file = settings$save_locs$full_log, FALSE)
   
-  #----------------------------------------------------------------------------
-  
-  # Simulate:
+  # Print/log start message:
+  start_msg <- paste0(
+    "\n", paste0(rep("~",80),collapse=""),
+    "\nStarting simulations on group(s): ", paste(settings$group,collapse=' '), 
+    " |\n\t times: ", settings$Npop, 
+		" | starting size: ", settings$nsam, 
+		" |\n\t to vary: ", paste0(names(settings$to_vary),collapse=" "), 
+		" |\n\t in group(s): ", paste0(settings$vary_in_group,collapse=' '),
+		"\n",paste0(rep("~",80),collapse=""),"\n\n"
+  )
+  double_cat(start_msg, settings$save_locs$full_log)
+
   data <- sim_main(estimates, settings)
+
+  double_cat("\nSimulation done\n\n", file = settings$save_locs$full_log)
   
-  #----------------------------------------------------------------------------
-  
-  # Save the data:
+  # Log data
+  double_cat("Results:\n", file=settings$save_locs$full_log, FALSE)
+  double_print(data, file = settings$save_locs$full_log, FALSE)
+  double_cat("\n", file = settings$save_locs$full_log, FALSE)
+
+  # Save data
   write.csv(data, settings$save_locs$data,row.names = F)
-  double_cat(paste("saved data to",settings$save_locs$data,"\n"),
-      file = settings$save_locs$full_log)
-  
-  #----------------------------------------------------------------------------
+  double_cat(
+    paste("saved data to",settings$save_locs$data,"\n"),
+    file = settings$save_locs$full_log
+  )
   
   # Save settings and parameters:
-  cat(toJSON(settings,pretty=T), file=settings$save_locs$settings)
-  cat(toJSON(estimates,pretty=T), file=settings$save_locs$parameters)
-  
-  double_cat(paste("saved settings to",settings$save_locs$settings,"\n"),
-             file = settings$save_locs$full_log)
-  double_cat(paste("saved read estimates to",settings$save_locs$parameters,"\n"),
-             file = settings$save_locs$full_log)
-  file.copy(settings$save_locs$full_log, settings$save_locs$full_log_perm, 
-            overwrite = T)
-  double_cat(paste("full log is in",settings$save_locs$full_log_perm,"\n"),
-             file = settings$save_locs$full_log)
-  
-  #----------------------------------------------------------------------------
-}
+  cat(toJSON(settings, pretty=T), file=settings$save_locs$settings)
+  cat(toJSON(estimates, pretty=T), file=settings$save_locs$parameters)
 
-if(sys.nframe()==0) {
-  options("scipen"=100) # For printing in non-scientific
-  
-  suppressMessages(library(dplyr))
-  suppressMessages(library(doParallel))
-  suppressMessages(library(jsonlite))
-  
-  #----------------------------------------------------------------------------
-  # Temporarily switch directory to scripts, source everything and read config
-  
-  called_from <- getwd()
-  full_cmds <- commandArgs(trailingOnly = F)
-  scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
-  setwd(scripts_dir)
-  
-  filenames <- fromJSON("_file_index.json")
-  script_names <- paste0(
-    filenames$scripts, ".", filenames$script_ext
-  )
-  sapply(script_names, source)
-  
-  default_config <- read_config(filenames, default = TRUE)
-  user_profile <- default_config
-  
-  estimates_data_name <- paste0(
-    filenames$default_ind, filenames$shared_data, ".",filenames$data_ext
-  )
-  user_profile$user_data <- read.csv(
-    file.path(
-      filenames$default_folder, 
-      estimates_data_name
-    )
+  # Move the log file to a permanent location
+  file.copy(
+    settings$save_locs$full_log, settings$save_locs$full_log_perm, 
+    overwrite = T
   )
   
-  sim_args <- commandArgs(trailingOnly = TRUE)
-  
-  setwd(called_from)
-  
-  #----------------------------------------------------------------------------
-  
-  register_par()
-  
-  sim_begin(sim_args, user_profile, default_config, scripts_dir)
+  # End messages
+  double_cat(
+    paste("saved settings to",settings$save_locs$settings,"\n"),
+    file = settings$save_locs$full_log
+  )
+  double_cat(
+    paste("saved read estimates to",settings$save_locs$parameters,"\n"),
+    file = settings$save_locs$full_log
+  )
+  double_cat(
+    paste("full log is in",settings$save_locs$full_log_perm,"\n"),
+    file = settings$save_locs$full_log
+  )
 }

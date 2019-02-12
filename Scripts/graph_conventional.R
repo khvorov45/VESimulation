@@ -57,6 +57,7 @@ make_graph <- function(
     graph_device <- "png"
     graph_save_dir <- file.path(args_processed$save_directory, graph_filename)
 
+    # Choose what graph to make
     if (fixed_var) graph_fixed_var(
       df, varied, descriptions, args_processed$errors, 
       args_processed$sample_size,
@@ -95,7 +96,6 @@ if(sys.nframe()==0) {
   library(ggedit)
   library(jsonlite)
   library(tools)
-  library(reshape2)
   suppressMessages(library(ggpubr))
   suppressMessages(library(dplyr))
 

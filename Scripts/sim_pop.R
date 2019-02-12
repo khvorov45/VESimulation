@@ -28,7 +28,8 @@ sim_pop <- function(pop_est) {
     group_name <- names(pop_est[i])
     
     # Get the parameters for that population group:
-    parameters <- get_group_parameters(pop_est, group_name)
+    parameters <- pop_est[[group_name]]
+    names(parameters) <- rownames(pop_est)
     
     # Simulate that group:
     group_summary <- sim_pop_group(parameters) %>% 

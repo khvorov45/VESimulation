@@ -1,10 +1,10 @@
-#------------------------------------------------------------------------------
+ #------------------------------------------------------------------------------
 # The script that will run the simulation for all the possible combinations
-# as per user settings
+# as per user settings profile
 #------------------------------------------------------------------------------
 
 run_user_profile <- function(
-  save_directory, user_profile, default_config, scripts_dir
+  save_directory, user_profile, scripts_dir
 ) {
 
   if(length(save_directory) != 1) stop("Too many arguments in save_directory")
@@ -21,44 +21,29 @@ run_user_profile <- function(
     names(vary_table), user_profile$sim_options$vary_rule
   )
   
+  # For duration caclulations
   amount_total <- length(groups) * length(variant_combinations)
   amount_done <- 0
   diffs <- c()
+
+  # Cycle through possible calls
   for(group in groups) {
     for(variant_combo in variant_combinations) {
       start <- Sys.time()
-      arg_set <- c(
-          paste0(
-            default_config$sim_usage$control_ind, 
-            default_config$sim_usage$save_directory_ind
-          ), 
-          save_directory
-      ) %>% c(
-        paste0(
-          default_config$sim_usage$control_ind, 
-          default_config$sim_usage$group_ind
-        ), 
-        paste(gsub("[*]","",group))
-      ) %>% c(
-        paste0(
-          default_config$sim_usage$control_ind, 
-          default_config$sim_usage$variants_ind
-        ), 
-        paste(unlist(strsplit(variant_combo,split = ' ')))
-      )
-      if(any(grepl('[*]',group))) arg_set <- c(
-        arg_set,
-        paste0(
-          default_config$sim_usage$control_ind, 
-          default_config$sim_usage$vary_in_group_ind
-        ), 
-        paste(gsub('[*]','',group[grepl('[*]',group)]))
-      )
-      
+
+      arg_set <- list()
+      arg_set$save_directory <- save_directory
+      arg_set$group <- paste(gsub("[*]","",group))
+      arg_set$variants <- paste(unlist(strsplit(variant_combo,split = ' ')))
+      if(any(grepl('[*]',group))) {
+        arg_set$vary_in_group <- paste(gsub('[*]','',group[grepl('[*]',group)]))
+      }
+
       sim_begin(
-        arg_set, user_profile, default_config, scripts_dir
+        arg_set, user_profile, scripts_dir
       )
       
+      # End message stuff
       amount_done <- amount_done + 1
       end <- Sys.time()
       diff <- as.numeric(end - start)
@@ -83,12 +68,14 @@ if(sys.nframe()==0) {
   options("scipen"=100) # For printing in non-scientific
 
   #----------------------------------------------------------------------------
-  # Temporarily switch directory to scripts, source everything and read config
+  # Temporarily switch directory
   
   called_from <- getwd()
   full_cmds <- commandArgs(trailingOnly = F)
   scripts_dir <- dirname(gsub("--file=","",full_cmds[4]))
   setwd(scripts_dir)
+
+  # Deal with python compatability
   source("fix_lib_path.R")
   fix_lib_path()
 
@@ -96,13 +83,14 @@ if(sys.nframe()==0) {
   suppressMessages(library(doParallel))
   suppressMessages(library(jsonlite))
   
+  # Source script files
   filenames <- fromJSON("_file_index.json")
   script_names <- paste0(
     filenames$scripts, ".", filenames$script_ext
   )
   sapply(script_names, source)
 
-  default_config <- read_config(filenames, default = TRUE)
+  default_config <- read_config(filenames, default = TRUE) # For usage options
   
   processed_args <- process_args(
     commandArgs(trailingOnly=T), default_config$run_profile_usage
@@ -112,6 +100,7 @@ if(sys.nframe()==0) {
     filenames, user = TRUE, profile_name = processed_args$profile_name
   )
   
+  # Add estimates to user profile
   estimates_data_name <- paste0(filenames$shared_data, ".",filenames$data_ext)
   user_profile$user_data <- read.csv(
     file.path(
@@ -125,6 +114,6 @@ if(sys.nframe()==0) {
   #----------------------------------------------------------------------------
 
   run_user_profile(
-    processed_args$save_directory, user_profile, default_config, scripts_dir
+    processed_args$save_directory, user_profile, scripts_dir
   )
 }
