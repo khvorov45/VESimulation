@@ -224,6 +224,8 @@ get_save_locs <- function(
   save_locs$full_log <- file.path(scripts_dir, "_current.log")
   save_locs$parallel_log <- file.path(folder, "full_log", "parallel_log.txt")
   
+  save_locs <- lapply(save_locs, normalizePath)
+  
   # Create all the directories
   for(filepath in save_locs) {
     if (!dir.exists(dirname(filepath))) dir.create(dirname(filepath))
