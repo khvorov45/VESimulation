@@ -76,8 +76,10 @@ if(sys.nframe()==0) {
   setwd(scripts_dir)
 
   # Deal with python compatability
-  source("fix_lib_path.R")
-  fix_lib_path()
+  if (Sys.info()['sysname'] == 'Windows') {
+    source("fix_lib_path.R")
+    fix_lib_path()
+  }
 
   suppressMessages(library(dplyr))
   suppressMessages(library(doParallel))

@@ -39,7 +39,7 @@ class OptionSelection:
         self.place_edit_btn(edit_btn)
     
     def place_edit_btn(self, edit_btn):
-        edit_btn.grid(row = self.row, column = 4)
+        edit_btn.grid(row = self.row, column = 4, sticky = 'w')
     
     def make_new_btn(self):
         new_btn = Button(self.master, text = "New profile")
