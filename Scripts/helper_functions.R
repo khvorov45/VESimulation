@@ -102,6 +102,10 @@ register_par <- function() {
     clusterEvalQ(cl, source("fix_lib_path.R"))
     clusterEvalQ(cl, fix_lib_path())
   }
+  clusterEvalQ(cl, library(dplyr))
+  clusterEvalQ(cl, source("helper_functions.R"))
+  clusterEvalQ(cl, source("sim_pop.R"))
+  clusterEvalQ(cl, source("sim_pop_group.R"))
   
   cat("Done\n")
 }

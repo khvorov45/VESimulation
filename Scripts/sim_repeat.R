@@ -23,13 +23,13 @@ sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
   # Simulate many populations
   pop_many <- foreach(i = 1:Npop, .combine = rbind) %dopar% {
     
-    library(dplyr)
+    #library(dplyr)
 	
-    setwd(scripts_dir)
-    source("helper_functions.R")
-    source("sim_pop.R")
-    source("sim_pop_group.R")
-    setwd(called_from)
+    #setwd(scripts_dir)
+    #source("helper_functions.R")
+    #source("sim_pop.R")
+    #source("sim_pop_group.R")
+    #setwd(called_from)
     
     # Pick one of the randomly genrated numbers
     pop_est_partial <- pop_est
