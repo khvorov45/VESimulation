@@ -98,8 +98,10 @@ register_par <- function() {
   registerDoParallel(cl)
 
   # Python compatability
-  clusterEvalQ(cl, source("fix_lib_path.R"))
-  clusterEvalQ(cl, fix_lib_path())
+  if (Sys.info()['sysname'] == 'Windows') {
+    clusterEvalQ(cl, source("fix_lib_path.R"))
+    clusterEvalQ(cl, fix_lib_path())
+  }
   
   cat("Done\n")
 }
