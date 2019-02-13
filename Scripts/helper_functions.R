@@ -223,13 +223,19 @@ get_save_locs <- function(
   save_locs$full_log_perm <- file.path(folder,"full_log",log_filename)
   save_locs$full_log <- file.path(scripts_dir, "_current.log")
   save_locs$parallel_log <- file.path(folder, "full_log", "parallel_log.txt")
-  
-  save_locs <- lapply(save_locs, normalizePath)
-  
-  # Create all the directories
-  for(filepath in save_locs) {
+
+  # Create all the directories and files
+  create_dir <- function(filepath) {
     if (!dir.exists(dirname(filepath))) dir.create(dirname(filepath))
-  } 
+  }
+  create_files <- function(filepath) {
+    if (!file.exists(filepath)) file.create(filepath)
+  }
+
+  lapply(save_locs, create_dir)
+  lapply(save_locs, create_files)
+
+  save_locs <- lapply(save_locs, normalizePath)
   
   return(save_locs)
 }
