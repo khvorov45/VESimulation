@@ -19,17 +19,11 @@ sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
     return(par_entry_new)
   }
   pop_est <- lapply(pop_est, gen_num_par)
+  cat("Directory before foreach:\n")
+  print(called_from)
   
   # Simulate many populations
   pop_many <- foreach(i = 1:Npop, .combine = rbind) %dopar% {
-    
-    #library(dplyr)
-	
-    #setwd(scripts_dir)
-    #source("helper_functions.R")
-    #source("sim_pop.R")
-    #source("sim_pop_group.R")
-    #setwd(called_from)
     
     # Pick one of the randomly genrated numbers
     pop_est_partial <- pop_est
