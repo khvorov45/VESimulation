@@ -64,10 +64,7 @@ run_user_profile <- function(
   )
 }
 
-if(sys.nframe()==0) {
-  
-  print(.libPaths())
-  
+if(sys.nframe()==0) {  
   options("scipen"=100) # For printing in non-scientific
 
   #----------------------------------------------------------------------------
@@ -83,8 +80,6 @@ if(sys.nframe()==0) {
     source("fix_lib_path.R")
     fix_lib_path()
   }
-  
-  print(.libPaths())
 
   suppressMessages(library(dplyr))
   suppressMessages(library(doParallel))
