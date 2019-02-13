@@ -1,2 +1,4 @@
 .httr-oauth
+.vscode
 Scripts/_current.log
+__pycache__

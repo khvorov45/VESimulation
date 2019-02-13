@@ -87,7 +87,7 @@ Main purpose is to modify `pop_est` by setting the appropriate entries to values
 Arguments:
 
 * `pop_est` - same as in `sim_cycle_parameter` with one change:
-  * `nsam` entry is added. If there is one group, this is the same as `nsam` in `settings`. If there are multiple, `prop` entry is used to set `nsam` in groups so that the sum is equal to `nsam` in `settings` 
+  * `nsam` entry is added. If there is one group, this is the same as `nsam` in `settings`. If there are multiple, `prop` entry is used to set `nsam` in groups so that the sum is equal to `nsam` in `settings`
 * `Npop` - amount of times to repeat the simulation.
 * `par_log` - log file for loop execution.
 
