@@ -10,8 +10,6 @@ sim_begin <- function(
     sim_args, user_profile$sim_options, 
     user_profile$vary_table, user_profile$allowed_groups, scripts_dir
   )
-
-  print(settings)
   
   # Log file create & clear:
   cat(as.character(Sys.time()),"\n\n",file = settings$save_locs$full_log) 

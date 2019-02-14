@@ -15,6 +15,45 @@ graph_prob_var <- function(
       save_units, save_dimensions
     )
   }
+  cat("graphing tornado\n")
+  save_dimensions <- c(6,6)
+  gr <- graph_tornado(df, varied)
+  save_graph(
+      gr, paste0(graph_save_dir,"--tornado"), graph_device, 
+      save_units, save_dimensions
+    )
+}
+
+# Tornado plot
+graph_tornado <- function(df, varied) {
+  
+  # Unadjusted linear coefficients
+  # Should probably look at the bias...
+  coeffs <- data.frame()
+  for (var in varied) {
+    for (dtype in unique(df$type)) {
+      var_entry <- data.frame(parameter = var, type = dtype)
+
+      lin_fit <- lm(
+        data = df[df$type == dtype , ], formula = VE_est_mean ~ get(var)
+      )
+      su <- summary(lin_fit)
+      
+      coeff <- su$coefficients['get(var)' , 'Estimate']
+      coeff_sd <- su$coefficients['get(var)' , 'Std. Error']
+
+      var_entry$lin_coef_est <- coeff
+      var_entry$lin_coef_sd <- coeff_sd
+      
+      coeffs <- rbind(coeffs, var_entry)
+    }
+  }
+
+  gr <- ggplot(coeffs, aes(x = parameter, y = lin_coef_est)) + theme_bw() +
+    geom_bar(position = "identity", stat = "identity") + 
+    ylab("Unadjusted linear coefficient estimate") +
+    facet_wrap(vars(type))
+  return(gr)
 }
 
 # Graphs one variant against outcome
@@ -27,7 +66,7 @@ graph_prob_unit <- function(df, var, desc) {
   # Scatter of VE_est vs varied parameter
   scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw() +
     geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) +
-    geom_point() + 
+    geom_point(alpha = 0.3, size = 0.7, stroke = 0) + 
     xlab(desc) + ylab("VE estimated") +
     facet_wrap(vars(type), nrow = 2) +
     theme(

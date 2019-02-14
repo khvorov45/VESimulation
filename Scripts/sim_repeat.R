@@ -20,12 +20,6 @@ sim_repeat <- function(pop_est, Npop, par_log, scripts_dir) {
   }
   pop_est <- lapply(pop_est, gen_num_par)
   
-  cat("Directory before foreach:\n")
-  print(called_from)
-
-  cat("Parallel log file:\n")
-  print(par_log)
-  
   # Simulate many populations
   pop_many <- foreach(i = 1:Npop, .combine = rbind) %dopar% {
     
