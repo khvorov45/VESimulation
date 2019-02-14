@@ -5,11 +5,11 @@
 make_graph <- function(
   args, usage_options, all_variants, descriptions
 ) {
-  
+
   args_processed <- process_args(args, usage_options)
-  if(!(dir.exists(args_processed$save_directory))) 
+  if (!(dir.exists(args_processed$save_directory)))
     dir.create(args_processed$save_directory)
-  
+
   data_filepaths <- list_files_with_exts(
     args_processed$data, exts=c("csv","tsv")
   )
@@ -21,17 +21,17 @@ make_graph <- function(
     cat("Fixing y at ")
     ylims <- get_minmax(data_filepaths, "VE_est_mean")
     cat("min", ylims[1],"max",ylims[2],"\n\n")
-  } 
+  }
   else {
     cat("Not fixing y\n\n")
     ylims <- c(NA,NA)
-  } 
+  }
 
   # Cycle through dfs
   amount_total <- length(data_filepaths)
   amount_done <- 0
   diffs <- c()
-  for(data_file in data_filepaths) {
+  for (data_file in data_filepaths) {
     start <- Sys.time()
 
     cat("File:",data_file,"\n")
@@ -66,14 +66,14 @@ make_graph <- function(
     else {
       graph_prob_var(df, varied, descriptions, graph_save_dir, graph_device)
     }
-    
+
     # End message stuff
     amount_done <- amount_done + 1
     end <- Sys.time()
     diff <- as.numeric(end - start)
     diffs <- c(diffs, diff)
     diff_short <- round(diff, 1)
-    est_to_comp <- mean(diffs)*(amount_total - amount_done)
+    est_to_comp <- mean(diffs) * (amount_total - amount_done)
     cat(
       "\nCompleted ", amount_done, "/", amount_total," in: ", 
       diff_short, "s | ", 
@@ -83,15 +83,15 @@ make_graph <- function(
   }
 
   dev.off()
-  if(file.exists("Rplots.pdf")) file.remove("Rplots.pdf")
+  if (file.exists("Rplots.pdf")) file.remove("Rplots.pdf")
 
   cat(
-    "Done in ", round(sum(diffs),1), "s (", round(sum(diffs)/60,1), "m)\n",
-    sep=""
+    "Done in ", round(sum(diffs), 1), "s (", round(sum(diffs) / 60, 1), "m)\n",
+    sep = ""
   )
 }
 
-if(sys.nframe()==0) {
+if (sys.nframe() == 0) {
   library(ggplot2)
   library(ggedit)
   library(jsonlite)

@@ -5,56 +5,69 @@
 graph_prob_var <- function(
   df, varied, descriptions, graph_save_dir, graph_device
 ) {
-  save_dimensions <- c(6,6)
+
+  # Graph individual parameters vs outcome
+  save_dimensions <- c(6, 6)
   save_units <- "in"
   for (var in varied) {
-    cat("graphing",var,"\n")
+    cat("graphing", var, "\n")
     gr <- graph_prob_unit(df, var, descriptions[var])
     save_graph(
-      gr, paste0(graph_save_dir,"--",var), graph_device, 
+      gr, paste0(graph_save_dir,"--",var), graph_device,
       save_units, save_dimensions
     )
   }
-  cat("graphing tornado\n")
-  save_dimensions <- c(6,6)
-  gr <- graph_tornado(df, varied)
-  save_graph(
-      gr, paste0(graph_save_dir,"--tornado"), graph_device, 
+
+  # Graph impact measurements of the parameters
+  cat("graphing tornados\n")
+  save_dimensions <- c(6,3)
+
+  coeffs_all <- get_coeffs(df, varied)
+  ind <- 0
+  for (coeffs_name in names(coeffs_all)) {
+    ind <- ind + 1
+    gr <- graph_coeffs(coeffs_all[[coeffs_name]], coeffs_name)
+    save_graph(
+      gr, paste0(graph_save_dir,"--tornado","--",ind), graph_device, 
       save_units, save_dimensions
     )
+  }  
 }
 
-# Tornado plot
-graph_tornado <- function(df, varied) {
-  
-  # Unadjusted linear coefficients
-  # Should probably look at the bias...
+# Returns coefficients associated with parameters
+get_coeffs <- function(df, varied) {
+
+  coeffs_full <- list()
+
+  # Adjusted linear coefficients
+  right_side <- paste0(varied, collapse = " + ")
+  left_side <- "VE_est_mean"
+  form <- paste0(left_side, " ~ ", right_side)
   coeffs <- data.frame()
-  for (var in varied) {
-    for (dtype in unique(df$type)) {
-      var_entry <- data.frame(parameter = var, type = dtype)
-
-      lin_fit <- lm(
-        data = df[df$type == dtype , ], formula = VE_est_mean ~ get(var)
-      )
-      su <- summary(lin_fit)
-      
-      coeff <- su$coefficients['get(var)' , 'Estimate']
-      coeff_sd <- su$coefficients['get(var)' , 'Std. Error']
-
-      var_entry$lin_coef_est <- coeff
-      var_entry$lin_coef_sd <- coeff_sd
-      
-      coeffs <- rbind(coeffs, var_entry)
-    }
+  for (dtype in unique(df$type)) {
+    type_entry <- data.frame(parameter = varied, type = dtype)
+    lin_fit <- lm(
+      data = df[df$type == dtype, ], formula = as.formula(form)
+    )
+    su <- summary(lin_fit)
+    type_entry$lin_coef_est <- su$coefficients[-1, "Estimate"]
+    type_entry$lin_coef_sd <- su$coefficients[-1, "Std. Error"]
+    coeffs <- rbind(coeffs, type_entry)
   }
+  coeffs_full[['Adjusted linear coefficient estimate']] <- coeffs
+  
+  return(coeffs_full)
+}
 
-  gr <- ggplot(coeffs, aes(x = parameter, y = lin_coef_est)) + theme_bw() +
+ # Graphs one set of coefficients
+ graph_coeffs <- function(coeffs, xlab) {
+   gr <- ggplot(coeffs, aes(x = parameter, y = lin_coef_est)) + theme_bw() +
     geom_bar(position = "identity", stat = "identity") + 
-    ylab("Unadjusted linear coefficient estimate") +
+    ylab(xlab) + xlab("Parameter") +
+    coord_flip() +
     facet_wrap(vars(type))
   return(gr)
-}
+ }
 
 # Graphs one variant against outcome
 graph_prob_unit <- function(df, var, desc) {
@@ -67,6 +80,7 @@ graph_prob_unit <- function(df, var, desc) {
   scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw() +
     geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) +
     geom_point(alpha = 0.3, size = 0.7, stroke = 0) + 
+    geom_smooth(method = "lm", lwd = 0.5, color = "blue", se = FALSE) + 
     xlab(desc) + ylab("VE estimated") +
     facet_wrap(vars(type), nrow = 2) +
     theme(
@@ -118,17 +132,17 @@ graph_fixed_var <- function(
   
   if (!is.null(facet_variable)) {
     cat("; faceting by", facet_variable,"\n")
-  } else { cat("\n") }
+  } else cat("\n")
 
   pl <- graph_base_1(
     df, descriptions, errors, sample_size, x_axis, y_axis, ylims
   )
-  
+
   if (!is.null(facet_variable)) {
-    pl <- add_facets(pl,facet_variable)
-    save_dimensions = c(10,10)
+    pl <- add_facets(pl, facet_variable)
+    save_dimensions <- c(10, 10)
   } else {
-    save_dimensions <- c(7,4)
+    save_dimensions <- c(7, 4)
   }
 
   save_units <- "in"
