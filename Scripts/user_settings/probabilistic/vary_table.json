@@ -1,17 +1,32 @@
 {
   "sens_vac": {
-    "special_no": ["beta", 10, 1]
+    "special_no": ["beta", 10, 1],
+	"children": ["beta", 10, 1],
+	"adults": ["beta", 10, 1],
+	"elderly": ["beta", 10, 1]
   },
   "spec_vac": {
     "special_no": ["beta", 10, 1]
+	"children": ["beta", 10, 1],
+	"adults": ["beta", 10, 1],
+	"elderly": ["beta", 10, 1]
   },
   "sens_flu": {
     "special_no": ["beta", 10, 1]
+	"children": ["beta", 10, 1],
+	"adults": ["beta", 10, 1],
+	"elderly": ["beta", 10, 1]
   },
   "spec_flu": {
     "special_no": ["beta", 10, 0.5]
+	"children": ["beta", 10, 0.5],
+	"adults": ["beta", 10, 0.5],
+	"elderly": ["beta", 10, 0.5]
   },
   "p_test_nonari": {
-    "special_no": ["beta", 0.5, 10]
+    "special_no": ["beta", 0.5, 10],
+	"children": ["beta", 0.5, 10],
+	"adults": ["beta", 0.5, 10],
+	"elderly": ["beta", 0.5, 10]
   }
 }
