@@ -46,7 +46,7 @@ run_user_profile <- function(
       # End message stuff
       amount_done <- amount_done + 1
       end <- Sys.time()
-      diff <- as.numeric(end - start)
+      diff <- as.numeric(difftime(end, start, units = "secs"))
       diffs <- c(diffs, diff)
       diff_short <- round(diff, 1)
       est_to_comp <- mean(diffs)*(amount_total - amount_done)
