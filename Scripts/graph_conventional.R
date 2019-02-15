@@ -82,8 +82,10 @@ make_graph <- function(
       )
   }
 
-  dev.off()
-  if (file.exists("Rplots.pdf")) file.remove("Rplots.pdf")
+  if (file.exists("Rplots.pdf")) {
+    dev.off()
+    file.remove("Rplots.pdf")
+  } 
 
   cat(
     "Done in ", round(sum(diffs), 1), "s (", round(sum(diffs) / 60, 1), "m)\n",
