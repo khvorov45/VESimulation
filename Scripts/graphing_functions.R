@@ -177,7 +177,7 @@ graph_base_1 <- function(
       na.rm = T
     ) +
     
-    scale_x_continuous(name = x_name, breaks = seq(0,1,0.1)) +
+    scale_x_continuous(name = x_name) +
     scale_y_continuous(name = "Estimated VE", limits = ylims) + 
     scale_color_manual(
       name = "Data type", values = c(4,2),
