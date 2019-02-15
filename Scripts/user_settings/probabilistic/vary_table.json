@@ -6,19 +6,19 @@
 	"elderly": ["beta", 10, 1]
   },
   "spec_vac": {
-    "special_no": ["beta", 10, 1]
+    "special_no": ["beta", 10, 1],
 	"children": ["beta", 10, 1],
 	"adults": ["beta", 10, 1],
 	"elderly": ["beta", 10, 1]
   },
   "sens_flu": {
-    "special_no": ["beta", 10, 1]
+    "special_no": ["beta", 10, 1],
 	"children": ["beta", 10, 1],
 	"adults": ["beta", 10, 1],
 	"elderly": ["beta", 10, 1]
   },
   "spec_flu": {
-    "special_no": ["beta", 10, 0.5]
+    "special_no": ["beta", 10, 0.5],
 	"children": ["beta", 10, 0.5],
 	"adults": ["beta", 10, 0.5],
 	"elderly": ["beta", 10, 0.5]
