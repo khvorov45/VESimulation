@@ -122,8 +122,19 @@ graph_fixed_var <- function(
 
   if (length(varied) > 2) stop("don't know how to graph more than 2 variants")
 
+  # Never facet by p_test_nonari
   if (length(varied) > 1) {
     facet_variable <- varied[2]
+    if (facet_variable == "p_test_nonari") {
+      facet_variable <- varied[1]
+      x_axis <- varied[2]
+    }
+    var_og <- df[, facet_variable]
+    if (!is.vector(var_og)) var_og <- unlist(var_og)
+    var_conv <- as.character(var_og)
+    var_conv <- paste0(facet_variable, " = ", var_conv)
+    var_conv <- as.factor(var_conv)
+    df[, facet_variable] <- var_conv
   } else facet_variable <- NULL
   
   y_axis <- "VE_est_mean"
