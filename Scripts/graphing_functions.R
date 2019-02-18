@@ -117,18 +117,25 @@ graph_fixed_var <- function(
   graph_device
 ) {
   
-  x_axis <- varied[1]
-  if(x_axis == "p_test_ari") varied <- varied[varied != "p_test_nonari"]
+  # Deal how I express p_test_nonari (recover original)
+  df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
 
+  varied <- get_varied(df, varied)
+  
   if (length(varied) > 2) stop("don't know how to graph more than 2 variants")
+  
+  x_axis <- varied[1]
 
-  # Never facet by p_test_nonari
   if (length(varied) > 1) {
+    
     facet_variable <- varied[2]
+    
+    # Never facet by p_test_nonari
     if (facet_variable == "p_test_nonari") {
       facet_variable <- varied[1]
       x_axis <- varied[2]
     }
+
     var_og <- df[, facet_variable]
     if (!is.vector(var_og)) var_og <- unlist(var_og)
     var_conv <- as.character(var_og)

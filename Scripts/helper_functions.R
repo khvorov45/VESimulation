@@ -485,12 +485,14 @@ get_varied <- function(df, possibilities) {
   nms_all <- names(df)
   nms_all <- nms_all[nms_all %in% possibilities]
   is_varied <- function(col) {
-    if (length((unique(col))) > 1) return(TRUE)
+    if (length(unique(na.omit(col))) > 1) return(TRUE)
     else return(FALSE)
   }
   varied <- sapply(df[ , nms_all], is_varied)
-  nms <- names(varied)[varied]
-  return(nms)
+
+  varied <- names(varied)[varied]
+
+  return(varied)
 }
 
 #------------------------------------------------------------------------------
