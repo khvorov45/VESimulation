@@ -411,8 +411,10 @@ take_averages <- function(pop_many, variants) {
   pop_avg <- pop_many %>% 
     mutate(VE_true = VE) %>%
     group_by_at(vars(c(variants, "name", "type", "VE_true"))) %>%
-    summarise(VE_est_mean = mean(VE_est), VE_est_sd = sd(VE_est), 
-              n_study_mean = mean(n_study)) %>% 
+    summarise(
+      VE_est_mean = mean(VE_est), VE_est_sd = sd(VE_est), 
+      n_study_mean = mean(n_study)
+    ) %>% 
     ungroup()
   
   return(pop_avg)

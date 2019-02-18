@@ -49,7 +49,7 @@ make_graph <- function(
     
     fixed_var <- is_fixed_var(df, varied)
 
-    df <- calc_useful(df) %>% take_averages(varied)
+    df <- calc_useful(df) %>% take_averages(all_variants)
 
     graph_filename <- unique(
       gsub("[.][[:alpha:]]{1,3}$","", basename(data_file))
