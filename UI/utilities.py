@@ -2,6 +2,7 @@
 
 import json
 import os
+import subprocess
 
 def read_filenames(script_dir):
     """Reads _file_index.json inside specified directory"""
@@ -45,3 +46,8 @@ def wrap_string(phrase):
         phrase_list.insert(ind + 1 + cnt, "\n")
     phrase = "".join(phrase_list)
     return phrase
+
+def open_folder_in_explorer(path_to_folder):
+    """Opens a folder in explorer window"""
+    path_to_folder = os.path.abspath(path_to_folder)
+    subprocess.Popen(["explorer", path_to_folder])
