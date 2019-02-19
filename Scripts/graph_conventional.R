@@ -16,8 +16,7 @@ make_graph <- function(
   copy_info(args_processed$data, args_processed$save_directory)
   
   # Check y fix
-  if(args_processed$fix_y) {
-    stop("unimplemented y fixation")
+  if (args_processed$fix_y) {
     cat("Fixing y at ")
     ylims <- get_minmax(data_filepaths, "VE_est_mean")
     cat("min", ylims[1],"max",ylims[2],"\n\n")

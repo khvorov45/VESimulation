@@ -471,7 +471,8 @@ get_minmax <- function(data_filepaths, var) {
   vals <- c()
   for(data_file in data_filepaths) {
     df <- read.csv(data_file)
-    vals <- c(vals, df[ , var])
+    df <- calc_useful(df) %>% take_averages(all_variants)
+    vals <- c(vals, unlist(df[ , var]))
   }
   vals <- na.omit(vals)
   vals <- vals[vals > -1 & vals < 1]
