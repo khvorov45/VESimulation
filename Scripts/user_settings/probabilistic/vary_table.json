@@ -1,32 +1,32 @@
 {
   "sens_vac": {
-    "special_no": ["beta", 10, 1],
-	"children": ["beta", 10, 1],
-	"adults": ["beta", 10, 1],
-	"elderly": ["beta", 10, 1]
+    "special_no": ["beta", 95, 5],
+	"children": ["beta", 95, 5],
+	"adults": ["beta", 95, 5],
+	"elderly": ["beta", 95, 5]
   },
   "spec_vac": {
-    "special_no": ["beta", 10, 1],
-	"children": ["beta", 10, 1],
-	"adults": ["beta", 10, 1],
-	"elderly": ["beta", 10, 1]
+    "special_no": ["beta", 42.5, 7.5],
+	"children": ["beta", 42.5, 7.5],
+	"adults": ["beta", 42.5, 7.5],
+	"elderly": ["beta", 42.5, 7.5]
   },
   "sens_flu": {
-    "special_no": ["beta", 10, 1],
-	"children": ["beta", 10, 1],
-	"adults": ["beta", 10, 1],
-	"elderly": ["beta", 10, 1]
+    "special_no": ["beta", 15, 5],
+	"children": ["beta", 15, 5],
+	"adults": ["beta", 15, 5],
+	"elderly": ["beta", 15, 5]
   },
   "spec_flu": {
-    "special_no": ["beta", 10, 0.5],
-	"children": ["beta", 10, 0.5],
-	"adults": ["beta", 10, 0.5],
-	"elderly": ["beta", 10, 0.5]
+    "special_no": ["beta", 95, 5],
+	"children": ["beta", 95, 5],
+	"adults": ["beta", 95, 5],
+	"elderly": ["beta", 95, 5]
   },
   "p_test_nonari": {
-    "special_no": ["beta", 0.5, 10],
-	"children": ["beta", 0.5, 10],
-	"adults": ["beta", 0.5, 10],
-	"elderly": ["beta", 0.5, 10]
+    "special_no": ["beta", 3, 17],
+	"children": ["beta", 3, 17],
+	"adults": ["beta", 3, 17],
+	"elderly": ["beta", 3, 17]
   }
 }
