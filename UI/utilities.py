@@ -9,6 +9,7 @@ def read_filenames(script_dir):
     filenames_filepath = os.path.join(
         script_dir, "_file_index.json"
     )
+    filenames_filepath = os.path.abspath(filenames_filepath)
     if not os.path.isfile(filenames_filepath):
         return None
     with open(filenames_filepath) as ind_file:

@@ -13,7 +13,6 @@ class SelectDirectory:
         init_sel_directory: initial selected directory
     """
     def __init__(self, master, label_text, ui_fun, init_sel_directory):
-        self.init_ask_dir = init_sel_directory
         self.directory = init_sel_directory
         self.lbl = Label(master, text=label_text)
         self.btn_text = StringVar()
@@ -30,7 +29,7 @@ class SelectDirectory:
 
     def select_directory(self):
         """Command the button is bound to"""
-        self.directory = filedialog.askdirectory(initialdir=self.init_ask_dir)
+        self.directory = filedialog.askdirectory(initialdir=self.directory)
         self.btn_text.set(self.directory)
         self.update_directory()
 
@@ -41,7 +40,3 @@ class SelectDirectory:
     def get_current_dir(self):
         """Returns current directory"""
         return self.directory
-
-    def set_init_ask_dir(self, dir_new):
-        """Changes directory that filedialog starts in"""
-        self.init_ask_dir = dir_new

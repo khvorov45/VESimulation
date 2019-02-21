@@ -8,6 +8,7 @@ from tkinter import Button
 from ui.selectdirectory import SelectDirectory
 from ui.optionselection import OptionSelection
 from ui.utilities import read_filenames, read_usage
+from ui.scriptvalidator import ScriptValidator
 
 class UI:
     """
@@ -21,15 +22,19 @@ class UI:
         script_dir: directory with R scripts of VE simulation
         ...
     """
-    def __init__(self, root):
+    def __init__(self, root, scripts_dir):
+
         self.save_dir = os.path.join(os.getcwd(), "VESimRun")
-        self.script_dir = os.getcwd()
+
+        self.script_dir = scripts_dir
+
+        self.script_validatior = ScriptValidator(root)
 
         self.script_sel_dir = SelectDirectory(
             root, "Location of scripts: ", self.update_script_dir,
             self.script_dir
         )
-        self.script_sel_dir.set_init_ask_dir("C:\\Nexus\\VESimulation\\Scripts")
+
         self.save_sel_dir = SelectDirectory(
             root, "Save directory: ", self.update_save_dir,
             self.save_dir
@@ -44,23 +49,29 @@ class UI:
             root, text="Print Call", command=self.print_call
         )
 
+        self.update_script_dir(self.script_dir)
+
         self.script_sel_dir.place(1, 1)
         self.save_sel_dir.place(2, 1)
         self.prof_selection.place(3, 1)
-        btn_run.grid(row=98, column=1)
-        btn_print_call.grid(row=98, column=2)
+        self.script_validatior.place(99, 1)
+        btn_run.grid(row=98, column=1, sticky="w")
+        btn_print_call.grid(row=98, column=2, sticky="w")
 
     def update_save_dir(self, dir_selected):
         """Updates save_dir in response to user choice"""
         if dir is None:
             return
+        dir_selected = os.path.abspath(dir_selected)
         self.save_dir = dir_selected
 
     def update_script_dir(self, dir_selected):
         """Updates script_dir in response to user choice"""
         if dir is None:
             return
+        dir_selected = os.path.abspath(dir_selected)
         self.script_dir = dir_selected
+        self.script_validatior.validate_scripts(self.script_dir)
         self.prof_selection.update(dir_selected)
 
     def build_call(self):
@@ -74,8 +85,8 @@ class UI:
         save_dir_ind = usage["save_directory_ind"]
         profile_ind = usage["profile_ind"]
         cont_ind = usage["control_ind"]
-        prof_name = self.prof_selection.get_current_profile()
-        if prof_name == '':
+        prof_name = self.prof_selection.btns.get_current_profile()
+        if prof_name == self.prof_selection.btns.empty_ind:
             print("Selelct a profile first")
             return None
         call = [
