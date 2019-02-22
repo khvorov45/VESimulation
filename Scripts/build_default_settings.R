@@ -54,8 +54,11 @@ build_def_vary_table <- function(filenames) {
     filenames$default_ind, "vary_table", ".", filenames$config_ext
   )
   
-  cat("\nRefreshing variation table... ")
+  constrained_vary_table_filename <- paste0(
+    filenames$default_ind, "const_vary_table", ".", filenames$config_ext
+  )
   
+  cat("\nRefreshing variation table... ")
   
   create_entry <- function(par_name) return(list())
   full_table <- lapply(par_names, create_entry)
@@ -76,9 +79,32 @@ build_def_vary_table <- function(filenames) {
   cat("Variation table saved to:", vary_table_filename, "\n")
 }
 
-ref_vary_table <- function() {
+ref_vary_table_full <- function() {
   
-  cycle_0.1_to_0.9 <- seq(0,1,0.1)
+  cycle_0.1_to_0.9 <- seq(0.1,0.9,0.1)
+  cycle_disease <- seq(0.1,0.6,0.1)
+  cycle_test <- seq(0.6,1,0.05)
+  
+  vary_table <- list(
+    "p_vac" = cycle_0.1_to_0.9,
+    "sens_vac" = cycle_test,
+    "spec_vac" = cycle_test,
+    "VE" = cycle_0.1_to_0.9,
+    "IP_flu" = cycle_disease,
+    "IP_nonflu" = cycle_disease,
+    "p_sympt_ari" = cycle_0.1_to_0.9,
+    "p_clin_ari" = cycle_0.1_to_0.9,
+    "p_test_ari" = cycle_0.1_to_0.9,
+    "p_test_nonari" = cycle_0.1_to_0.9,
+    "sens_flu" = cycle_test,
+    "spec_flu" = cycle_test
+  )
+  
+  return(vary_table)
+}
+
+ref_vary_table_const <- function() {
+  cycle_0.1_to_0.9 <- seq(0.1,0.9,0.1)
   cycle_disease <- seq(0.1,0.6,0.1)
   cycle_test <- seq(0.6,1,0.05)
   
@@ -135,4 +161,6 @@ if(sys.nframe()==0) {
   build_def_estimates(filenames)
   build_def_groups(filenames)
   build_def_vary_table(filenames)
+  
+  cat("\nDone\n")
 }
