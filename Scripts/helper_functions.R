@@ -6,7 +6,7 @@
 read_config <- function(
   filenames, default = !user, user = !default, profile_name = NA
 ) {
-  if(default) {
+  if (default) {
     folder <- filenames$default_folder
     config_names <- c(
       filenames$shared_config,filenames$default_only_config
@@ -17,11 +17,12 @@ read_config <- function(
     
   } else {
     folder <- file.path(filenames$user_folder, profile_name)
-    if(!dir.exists(folder)) stop("no profile ", profile_name, " found")
+    if (!dir.exists(folder)) stop("no profile ", profile_name, " found")
     config_names <- filenames$shared_config
-    config_files <- paste0(config_names, ".",filenames$config_ext)
+    config_files <- paste0(config_names, ".", filenames$config_ext)
   }
   config_filepaths <- file.path(folder, config_files)
+  print(config_filepaths)
   config <- lapply(config_filepaths, fromJSON)
   names(config) <- config_names
   return(config)

@@ -5,7 +5,7 @@
 	"user_profiles" : ["default", "test_profile"],
 	"config_ext" : "json",
 	"shared_config" : [
-		"allowed_groups", "sim_options", "vary_table_def", "vary_table_constr"
+		"allowed_groups", "sim_options", "vary_table"
 	],
 	"default_only_config" : [
 		"graph_usage", "run_profile_usage", "sim_usage", 
