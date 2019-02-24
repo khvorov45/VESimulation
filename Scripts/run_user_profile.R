@@ -12,6 +12,8 @@ run_user_profile <- function(
   
   vary_table <- user_profile$vary_table
   
+  if (identical(vary_table, NULL)) stop("no vary table in user profile")
+  
   variants <- names(vary_table)
   
   groups <- user_profile$allowed_groups

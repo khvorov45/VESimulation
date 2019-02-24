@@ -41,7 +41,7 @@ read_from_gs <- function(filename, sheetname, skip = 0) {
   return(df)
 }
 
-build_def_vary_table <- function(filenames) {
+build_def_vary_tables <- function(filenames) {
 
   def_data <- read_def_est(filenames)
   group_names <- names(select(def_data, -Description, -Parameter))
@@ -50,33 +50,33 @@ build_def_vary_table <- function(filenames) {
   
   group_names <- standardise_names(group_names)
   
-  vary_table_filename <- paste0(
-    filenames$default_ind, "vary_table", ".", filenames$config_ext
-  )
-  
-  constrained_vary_table_filename <- paste0(
-    filenames$default_ind, "const_vary_table", ".", filenames$config_ext
-  )
-  
-  cat("\nRefreshing variation table... ")
+  cat("\nRefreshing variation tables...\n")
   
   create_entry <- function(par_name) return(list())
   full_table <- lapply(par_names, create_entry)
   names(full_table) <- par_names
   
-  ref_table <- ref_vary_table()
+  ref_tables <- list(
+    "def" = ref_vary_table_full(), 
+    "constr" = ref_vary_table_constrained()
+  )
   
-  for(par_name in par_names) {
-    for(group_name in group_names) {
-      full_table[[par_name]][[group_name]] = ref_table[[par_name]]
+  for (ref_table_name in names(ref_tables)) {
+    ref_table <- ref_tables[[ref_table_name]]
+    for(par_name in par_names) {
+      for(group_name in group_names) {
+        full_table[[par_name]][[group_name]] = ref_table[[par_name]]
+      }
     }
+    vary_table_filename <- paste0(
+      filenames$default_ind, "vary_table", "_", ref_table_name, 
+      ".", filenames$config_ext
+    )
+    cat(toJSON(full_table, pretty = T), file = vary_table_filename)
+    cat("Variation table saved to:", vary_table_filename, "\n")
   }
   
-  cat(toJSON(full_table, pretty = T), file = vary_table_filename)
-  
-  cat("Done\n")
-  
-  cat("Variation table saved to:", vary_table_filename, "\n")
+  cat("Done with vary tables\n")
 }
 
 ref_vary_table_full <- function() {
@@ -103,24 +103,29 @@ ref_vary_table_full <- function() {
   return(vary_table)
 }
 
-ref_vary_table_const <- function() {
-  cycle_0.1_to_0.9 <- seq(0.1,0.9,0.1)
-  cycle_disease <- seq(0.1,0.6,0.1)
-  cycle_test <- seq(0.6,1,0.05)
+ref_vary_table_constrained <- function() {
+  cycle_0.05_to_0.5 <- seq(0.05, 0.5, 0.05)
+  cycle_0.9_to_1 <- seq(0.9, 1, 0.02)
+  cycle_0.7_to_1 <- seq(0.7, 1, 0.05)
+  cycle_0.1_to_0.9 <- seq(0.1, 0.9, 0.1)
+  cycle_0.01_to_0.05 <- seq(0.01, 0.05, 0.01)
+  cycle_0.08_to_0.12 <- seq(0.08, 0.12, 0.01)
+  cycle_0_to_0.3 <- seq(0, 0.3, 0.05)
+  cycle_0.5_to_1 <- seq(0.5, 1, 0.1)
   
   vary_table <- list(
-    "p_vac" = cycle_0.1_to_0.9,
-    "sens_vac" = cycle_test,
-    "spec_vac" = cycle_test,
+    "p_vac" = cycle_0.05_to_0.5,
+    "sens_vac" = cycle_0.9_to_1,
+    "spec_vac" = cycle_0.7_to_1,
     "VE" = cycle_0.1_to_0.9,
-    "IP_flu" = cycle_disease,
-    "IP_nonflu" = cycle_disease,
+    "IP_flu" = cycle_0.01_to_0.05,
+    "IP_nonflu" = cycle_0.08_to_0.12,
     "p_sympt_ari" = cycle_0.1_to_0.9,
     "p_clin_ari" = cycle_0.1_to_0.9,
     "p_test_ari" = cycle_0.1_to_0.9,
-    "p_test_nonari" = cycle_0.1_to_0.9,
-    "sens_flu" = cycle_test,
-    "spec_flu" = cycle_test
+    "p_test_nonari" = cycle_0_to_0.3,
+    "sens_flu" = cycle_0.5_to_1,
+    "spec_flu" = cycle_0.9_to_1
   )
   
   return(vary_table)
@@ -158,9 +163,9 @@ if(sys.nframe()==0) {
   
   #----------------------------------------------------------------------------
   
-  build_def_estimates(filenames)
-  build_def_groups(filenames)
-  build_def_vary_table(filenames)
+  #build_def_estimates(filenames)
+  #build_def_groups(filenames)
+  build_def_vary_tables(filenames)
   
   cat("\nDone\n")
 }

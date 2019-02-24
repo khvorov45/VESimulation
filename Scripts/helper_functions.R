@@ -21,7 +21,7 @@ read_config <- function(
     config_names <- filenames$shared_config
     config_files <- paste0(config_names, ".",filenames$config_ext)
   }
-  config_filepaths <- file.path(folder,config_files)
+  config_filepaths <- file.path(folder, config_files)
   config <- lapply(config_filepaths, fromJSON)
   names(config) <- config_names
   return(config)
