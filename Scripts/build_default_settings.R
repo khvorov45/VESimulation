@@ -163,8 +163,8 @@ if(sys.nframe()==0) {
   
   #----------------------------------------------------------------------------
   
-  #build_def_estimates(filenames)
-  #build_def_groups(filenames)
+  build_def_estimates(filenames)
+  build_def_groups(filenames)
   build_def_vary_tables(filenames)
   
   cat("\nDone\n")
