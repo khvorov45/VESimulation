@@ -1,14 +1,14 @@
-Parameter,Special_no,Special_sens,Special_spec,Children (<15),Adults (15-65),Elderly (65+),Description
-prop,NA,NA,NA,0.189,0.657,0.154,Proportion of the age groups in the general population
-p_vac,0.5,0.5,0.5,0.11,0.25,0.66,Probability of being vaccinated
-sens_vac,1,1,1,1,1,1,Sensitivity of exposure measurement
-spec_vac,1,1,1,1,1,1,Specificity of exposure measurement
-VE,0.5,0.5,0.5,0.63,0.51,0.39,Vaccine effectiveness
-IP_flu,0.3,0.3,0.3,0.05,0.05,0.05,Influenza risk in unvaccinated
-IP_nonflu,0.3,0.3,0.3,0.1,0.1,0.1,Non-influenza ARI risk in everyone
-p_sympt_ari,1,1,1,0.84,0.84,0.84,Probability of the ARI being symptomatic
-p_clin_ari,1,1,1,1,0.4,1,Relative probability of being clinically assessed as having ARI when it is symptomatic
-p_test_ari,1,1,1,0.49,1,0.64,Relative tested probability for clinically assessed ARI
-p_test_nonari,1,1,1,1,1,1,Relative tested probability for everyone without clinically assessed ARI
-sens_flu,1,0.95,1,0.86,0.86,0.86,Sensitivity of influenza test
-spec_flu,1,1,0.95,0.984,0.984,0.984,Specificity of influenza test
+"Parameter","Special_no","Special_se_f","Special_sp_f","Special_se_v","Special_sp_v","Special_lf","Special_lnf","Special_lpv","Children (<15)","Adults (15-65)","Elderly (65+)","Description"
+"prop",NA,NA,NA,NA,NA,NA,NA,NA,0.189,0.657,0.154,"Proportion of the age groups in the general population"
+"p_vac",0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.1,0.11,0.25,0.66,"Probability of being vaccinated"
+"sens_vac",1,1,1,0.95,1,1,1,1,0.95,0.95,0.95,"Sensitivity of exposure measurement"
+"spec_vac",1,1,1,1,0.95,1,1,1,0.85,0.85,0.85,"Specificity of exposure measurement"
+"VE",0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.63,0.51,0.39,"Vaccine effectiveness"
+"IP_flu",0.3,0.3,0.3,0.3,0.3,0.05,0.3,0.3,0.05,0.05,0.05,"Influenza risk in unvaccinated"
+"IP_nonflu",0.3,0.3,0.3,0.3,0.3,0.3,0.05,0.3,0.1,0.1,0.1,"Non-influenza ARI risk in everyone"
+"p_sympt_ari",1,1,1,1,1,1,1,1,0.84,0.84,0.84,"Probability of the ARI being symptomatic"
+"p_clin_ari",1,1,1,1,1,1,1,1,1,0.4,1,"Relative probability of being clinically assessed as having ARI when it is symptomatic"
+"p_test_ari",1,1,1,1,1,1,1,1,0.49,1,0.64,"Relative tested probability for clinically assessed ARI"
+"p_test_nonari",1,1,1,1,1,1,1,1,1,1,1,"Relative tested probability for everyone without clinically assessed ARI"
+"sens_flu",1,0.95,1,1,1,1,1,1,0.86,0.86,0.86,"Sensitivity of influenza test"
+"spec_flu",1,1,0.95,1,1,1,1,1,0.984,0.984,0.984,"Specificity of influenza test"

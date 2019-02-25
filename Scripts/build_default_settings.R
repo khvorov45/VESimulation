@@ -51,19 +51,19 @@ build_def_vary_tables <- function(filenames) {
   group_names <- standardise_names(group_names)
   
   cat("\nRefreshing variation tables...\n")
-  
-  create_entry <- function(par_name) return(list())
-  full_table <- lapply(par_names, create_entry)
-  names(full_table) <- par_names
-  
+    
   ref_tables <- list(
     "def" = ref_vary_table_full(), 
-    "constr" = ref_vary_table_constrained()
+    "constr" = ref_vary_table_constrained(),
+    "prob" = ref_vary_table_prob()
   )
   
   for (ref_table_name in names(ref_tables)) {
+    full_table <- list()
     ref_table <- ref_tables[[ref_table_name]]
     for(par_name in par_names) {
+      if (is.null(ref_table[[par_name]])) next
+      full_table[[par_name]] <- list()
       for(group_name in group_names) {
         full_table[[par_name]][[group_name]] = ref_table[[par_name]]
       }
@@ -131,6 +131,22 @@ ref_vary_table_constrained <- function() {
   return(vary_table)
 }
 
+ref_vary_table_prob <- function() {
+  sens_vac_val <- c("beta", 95, 5)
+  spec_vac_val <- c("beta", 42.5, 7.5)
+  sens_flu_val <- c("beta", 15, 5)
+  spec_flu_val <- c("beta", 95, 5)
+  p_test_nonari_val <- c("beta", 3, 17)
+  vary_table <- list(
+    "sens_vac" = sens_vac_val,
+    "spec_vac" = spec_vac_val,
+    "p_test_nonari" = p_test_nonari_val,
+    "sens_flu" = sens_flu_val,
+    "spec_flu" = spec_flu_val
+  )
+  return(vary_table)
+}
+
 read_def_est <- function(filenames) {
   estimates_data_name <- paste0(
     filenames$default_ind, filenames$shared_data, ".",filenames$data_ext
@@ -163,8 +179,8 @@ if(sys.nframe()==0) {
   
   #----------------------------------------------------------------------------
   
-  build_def_estimates(filenames)
-  build_def_groups(filenames)
+  #build_def_estimates(filenames)
+  #build_def_groups(filenames)
   build_def_vary_tables(filenames)
   
   cat("\nDone\n")
