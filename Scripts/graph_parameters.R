@@ -79,7 +79,7 @@ graph_parameters <- function(args, usage_options, descriptions) {
     grp_path <- file.path("FixedParameterGraphs", gr_name)
     ggsave(
       pl, device = "png", filename = grp_path, 
-      width = 7, height = 4, units = "in"
+      width = 15, height = 10, units = "cm"
     )
     cat("Done\n")
   }
