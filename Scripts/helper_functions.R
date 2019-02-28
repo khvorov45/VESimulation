@@ -123,11 +123,13 @@ get_variant_combinations <- function(possibilities, rule) {
   for(i in 1:n) {
     placeholder[[i]] <- possibilities[grepl(rule[i],possibilities)]
     if(identical(placeholder[[i]],character(0))) stop(rule[i], " not found")
-  } 
+  }
   
   combos <- placeholder[[1]]
   placeholder <- placeholder[-1]
   combos <- cycle_through(placeholder, combos)
+
+  combos <- remove_repeats(combos)
   
   return(combos)
 }
@@ -159,6 +161,28 @@ contains_duplicates <- function(string) {
   char_vec <- unlist(strsplit(string, split = ' '))
   if(anyDuplicated(char_vec)) { return(TRUE) }
   else { return(FALSE) }
+}
+
+remove_repeats <- function(vecs) {
+  vecs_clean <- c()
+  vec_els <- list()
+  ind <- 0
+  for (vec in vecs) {
+    is_repeated <- FALSE
+    all_vec_elements <- unlist(strsplit(vec, split = ' '))
+    for (vec_el_set in vec_els) {
+      if (all(all_vec_elements %in% vec_el_set)) {
+        is_repeated <- TRUE
+        break
+      }
+    }
+    if (is_repeated) next
+    ind <- ind + 1
+    vecs_clean[ind] <- vec
+    vec_els[[ind]] <- all_vec_elements
+  }
+
+  return(vecs_clean)
 }
 
 #------------------------------------------------------------------------------

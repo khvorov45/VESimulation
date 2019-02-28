@@ -1,0 +1,20 @@
+{
+  "p_vac": {
+    "special_no": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  },
+  "sens_vac": {
+    "special_no": [0.95]
+  },
+  "spec_vac": {
+    "special_no": [0.95]
+  },
+  "VE": {
+    "special_no": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  },
+  "sens_flu": {
+    "special_no": [0.95]
+  },
+  "spec_flu": {
+    "special_no": [0.95]
+  }
+}
