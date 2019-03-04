@@ -72,20 +72,30 @@ get_coeffs <- function(df, varied) {
 # Graphs one variant against outcome
 graph_prob_unit <- function(df, var, desc) {
   
+  VE_true_1 <- length(unique(unlist(df[, "VE_true"]))) == 1
+  
   # Frequency of the varied parameter
   freq <- ggplot(df, aes(x=get(var), y = stat(density))) + theme_bw() +
     geom_freqpoly(binwidth = 0.01) + xlab(desc)
   
   # Scatter of VE_est vs varied parameter
-  scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw()
-  if (length(unique(unlist(df[, "VE_true"]))) == 1) {
-    scat <- scat + geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1)
+  
+  if (VE_true_1) {
+    scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) 
+    scat <- scat + 
+      geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) + 
+      ylab("VE estimated")
+  } else {
+    df$bias <- df$VE_est_mean - df$VE_true
+    scat <- ggplot(df, aes_string(x = var, y = "bias")) + 
+      ylab("VE estimate bias")
   }
   scat <- scat +
     geom_point(alpha = 0.3, size = 0.7, stroke = 0) + 
     geom_smooth(method = "lm", lwd = 0.5, color = "blue", se = FALSE) + 
-    xlab(desc) + ylab("VE estimated") +
+    xlab(desc) + 
     facet_wrap(vars(type), nrow = 2) +
+    theme_bw() +
     theme(
       panel.spacing = unit(0,"lines"),
       plot.margin = unit(c(0,1,1,1), "lines")
