@@ -1,5 +1,6 @@
 {
 	"control_ind" : "--",
 	"save_directory_ind" : "save_directory",
-	"profile_ind" : "profile_name"
+	"profile_ind" : "profile_name",
+	"decrease_ind" : "core_decrease"
 }

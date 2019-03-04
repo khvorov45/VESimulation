@@ -105,14 +105,16 @@ if(sys.nframe()==0) {
   )
   
   # Add estimates to user profile
-  estimates_data_name <- paste0(filenames$shared_data, ".",filenames$data_ext)
+  estimates_data_name <- paste0(filenames$shared_data, ".", filenames$data_ext)
   user_profile$user_data <- read.csv(
     file.path(
       filenames$user_folder, processed_args$profile_name, 
       estimates_data_name
     )
   )
-  register_par()
+  if (processed_args$core_decrease[1] == FALSE) core_decrease <- 0
+  else core_decrease <- as.numeric(processed_args$core_decrease[1])
+  register_par(core_decrease)
   setwd(called_from)
   
   #----------------------------------------------------------------------------

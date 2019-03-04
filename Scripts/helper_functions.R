@@ -91,8 +91,8 @@ get_control_inds <- function(control_indicator, args) {
 # Registers parallel backend. Assumes we are in scripts
 #------------------------------------------------------------------------------
 
-register_par <- function() {
-  n_cores <- detectCores()
+register_par <- function(core_decrease) {
+  n_cores <- detectCores() - core_decrease
   cat(paste("Registering parallel backend with", n_cores, "cores... "))
   cl <- makeCluster(n_cores)
   registerDoParallel(cl)
