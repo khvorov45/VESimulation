@@ -94,7 +94,7 @@ make_graph <- function(
 
 if (sys.nframe() == 0) {
   library(ggplot2)
-  library(ggedit)
+  suppressMessages(library(ggedit))
   library(jsonlite)
   library(tools)
   suppressMessages(library(ggpubr))
