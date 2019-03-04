@@ -1,0 +1,20 @@
+{
+  "p_vac": {
+    "special_no": ["beta", "1", "1"]
+  },
+  "sens_vac": {
+    "special_no": ["beta", "95", "5"]
+  },
+  "spec_vac": {
+    "special_no": ["beta", "42.5", "7.5"]
+  },
+  "VE": {
+    "special_no": ["beta", "1", "1"]
+  },
+  "sens_flu": {
+    "special_no": ["beta", "15", "5"]
+  },
+  "spec_flu": {
+    "special_no": ["beta", "95", "5"]
+  }
+}
