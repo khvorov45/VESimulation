@@ -77,8 +77,11 @@ graph_prob_unit <- function(df, var, desc) {
     geom_freqpoly(binwidth = 0.01) + xlab(desc)
   
   # Scatter of VE_est vs varied parameter
-  scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw() +
-    geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) +
+  scat <- ggplot(df, aes_string(x = var, y = "VE_est_mean")) + theme_bw()
+  if (length(unique(unlist(df[, "VE_true"]))) == 1) {
+    scat <- scat + geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1)
+  }
+  scat <- scat +
     geom_point(alpha = 0.3, size = 0.7, stroke = 0) + 
     geom_smooth(method = "lm", lwd = 0.5, color = "blue", se = FALSE) + 
     xlab(desc) + ylab("VE estimated") +
