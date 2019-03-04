@@ -1,5 +1,5 @@
 {
 	"nsam" : 200000,
 	"Npop" : 300,
-	"vary_rule" : ["VE", "p_vac", "."]
+	"vary_rule" : ["VE", "p_vac"]
 }
