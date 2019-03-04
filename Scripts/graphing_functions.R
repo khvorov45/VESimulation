@@ -6,12 +6,15 @@ graph_prob_var <- function(
   df, varied, descriptions, graph_save_dir, graph_device
 ) {
 
+  VE_true_1 <- length(unique(unlist(df[, "VE_true"]))) == 1
+  if (!VE_true_1) df$bias <- df$VE_est_mean - df$VE_true
+
   # Graph individual parameters vs outcome
   save_dimensions <- c(6, 6)
   save_units <- "in"
   for (var in varied) {
     cat("graphing", var, "\n")
-    gr <- graph_prob_unit(df, var, descriptions[var])
+    gr <- graph_prob_unit(df, var, descriptions[var], VE_true_1)
     save_graph(
       gr, paste0(graph_save_dir,"--",var), graph_device,
       save_units, save_dimensions
@@ -22,7 +25,7 @@ graph_prob_var <- function(
   cat("graphing tornados\n")
   save_dimensions <- c(6,3)
 
-  coeffs_all <- get_coeffs(df, varied)
+  coeffs_all <- get_coeffs(df, varied, VE_true_1)
   ind <- 0
   for (coeffs_name in names(coeffs_all)) {
     ind <- ind + 1
@@ -35,13 +38,14 @@ graph_prob_var <- function(
 }
 
 # Returns coefficients associated with parameters
-get_coeffs <- function(df, varied) {
+get_coeffs <- function(df, varied, VE_true_1) {
 
   coeffs_full <- list()
 
   # Adjusted linear coefficients
   right_side <- paste0(varied, collapse = " + ")
-  left_side <- "VE_est_mean"
+  if (VE_true_1) left_side <- "VE_est_mean"
+  else left_side <- "bias"
   form <- paste0(left_side, " ~ ", right_side)
   coeffs <- data.frame()
   for (dtype in unique(df$type)) {
@@ -70,10 +74,8 @@ get_coeffs <- function(df, varied) {
  }
 
 # Graphs one variant against outcome
-graph_prob_unit <- function(df, var, desc) {
-  
-  VE_true_1 <- length(unique(unlist(df[, "VE_true"]))) == 1
-  
+graph_prob_unit <- function(df, var, desc, VE_true_1) {
+    
   # Frequency of the varied parameter
   freq <- ggplot(df, aes(x=get(var), y = stat(density))) + theme_bw() +
     geom_freqpoly(binwidth = 0.01) + xlab(desc)
@@ -86,7 +88,6 @@ graph_prob_unit <- function(df, var, desc) {
       geom_hline(aes(yintercept = VE_true), linetype = 5, lwd = 1) + 
       ylab("VE estimated")
   } else {
-    df$bias <- df$VE_est_mean - df$VE_true
     scat <- ggplot(df, aes_string(x = var, y = "bias")) + 
       ylab("VE estimate bias")
   }
