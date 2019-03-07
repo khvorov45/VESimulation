@@ -5,7 +5,7 @@ import os
 
 from tkinter import Tk
 
-from ui.uimain import UI
+from ui import UI
 
 def run_sim_ui(args):
     """Runs UI"""
