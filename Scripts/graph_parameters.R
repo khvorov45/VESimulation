@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Graphs paramter patterns
+# Graphs parameter patterns
 #------------------------------------------------------------------------------
 
 graph_parameters <- function(args, usage_options, descriptions) {
