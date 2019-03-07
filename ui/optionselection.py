@@ -5,8 +5,8 @@ import os
 from tkinter import Button
 from shutil import copy
 
-from ui.profilebuttons import ProfileButtons
-from ui.utilities import read_filenames, open_folder_in_explorer
+from .profilebuttons import ProfileButtons
+from .utilities import read_filenames, open_folder_in_explorer
 
 class OptionSelection:
     """

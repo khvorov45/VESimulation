@@ -4,7 +4,7 @@ import os
 
 from tkinter import Label
 
-from ui.utilities import read_filenames
+from .utilities import read_filenames
 
 class ScriptValidator:
     """
