@@ -539,3 +539,18 @@ is_fixed_var <- function(df, varied) {
     unlist()
   return(!any(vec))
 }
+
+#------------------------------------------------------------------------------
+# Reads all csv files in a folder and aggregates them for graphing
+#------------------------------------------------------------------------------
+
+read_all_csv <- function(datapath, parameter_names) {
+  dfs <- data.frame()
+  for (filename in list_files_with_exts(datapath, "csv")) {
+    df <- read.csv(filename)
+    df <- calc_useful(df) %>% take_averages(parameter_names)
+    df$filename <- basename(filename)
+    dfs <- rbind(dfs, df)
+  }
+  return(dfs)
+}
