@@ -8,6 +8,7 @@ sim_pop <- function(pop_est) {
   # Convert to df
   pop_est_li <- pop_est
   pop_est <- data.frame()
+  
 
   for(par_name in names(pop_est_li)) {
     par_entry <- as.data.frame(pop_est_li[[par_name]])
