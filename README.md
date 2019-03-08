@@ -64,21 +64,21 @@ Builds arguments for `sim_set_functions`. Does not change data returned by `sim_
 
 Arguments:
 
-* `pop_est` - a list containing parameter values for every group. Those values come from `estimates.csv` with the following modifications:
+* `pop_est` - a list containing parameter values for every group. Those values come from `estimates.csv` with the following modifications expected to have been made beforehand:
   * Group names are lowercased and free of garbage (such as dots or parentheses that can be there as an artefact of `read.csv` not reading some names properly)
-  * If there is only one group, `p_test_ari` and `prop` are set to 1
+  * If there is only one group, `p_clin_ari` (no absolute estimates available) and `prop` (irrelevant when there is only one group) are set to 1.
 * `settings` - same as `sim_main`
 
 Main purpose is to modify `pop_est` by replacing every every parameter/group entry with a function specified by the appropriate entry in `settigs$to_vary`. \
 For example, if `p_vac` is to be varied according to a beta distribution with parameters alpha = 3 and beta = 3 in group `special_no`, then the `pop_est` entry for `p_vac` (for group `special_no`) will be replaced by a callable object whose call (without arguments) will be equivalent to calling `rbeta(Npop, 3, 3)`. \
-Used entries in `settings$to_vary` are removed.
+Used entries in `settings$to_vary` are removed before `settings` list is passed on.
 
 #### `sim_cycle_parameter`
 
 Arguments:
 
 * `pop_est` - a list containing parameter values for every group.
-* `settings` - same as `sim_main`
+* `settings` - same as `sim_set_functions` except with used entries removed.
 
 Main purpose is to modify `pop_est` by setting the appropriate entries to values specified by `to_vary`. Once it sets all listed parameters to one of their values it formats `pop_est` for `sim_repeat` and passes it. Once `sim_repeat` returns, if there are parameter value combinations still left to pass it does so and appends the returned data to the existing one. Once it returns to `sim_main` the data is ready to be written.
 
@@ -101,8 +101,7 @@ Arguments:
 
 Modifies `pop_est`:
 
-* Converts it to a dataframe
-* Modifies `p_test_nonari` - sets it to absolute probability (rather than one relative to `p_test_ari`). For example, if `p_test_ari` is 0.5 and `p_test_nonari` is 0.2, `p_test_nonari` is set to 0.1 (0.2*0.5).
+* Converts it back to a dataframe - list structure is expected to support that at this point.
 
 Simulates a full population. \
 Passes each column in modified `pop_est` to `sim_pop_group` as a named vector. Counts the amount of cases and controls from the data returned by `sim_pop_group`. If there are multiple groups, sums them to get overall counts. Then uses that to obtain VE estimates for each group (and the population overall if there are multiple groups). \
