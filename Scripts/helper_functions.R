@@ -303,8 +303,8 @@ format_estimates_init <- function(estimates_og, group) {
   # Format p_test_ari and prop:
   n_groups <- ncol(pop_est)
   if(n_groups == 1) {
-    pop_est["p_test_ari" , ] <- 1
-    pop_est["prop" , ] <- 1
+    pop_est$prop <- 1 # Only relevant when multiple groups are present
+    pop_est$p_clin_ari <- 1 # No absolute estimates
   } 
 
   # Convert to list:
@@ -321,6 +321,7 @@ format_estimates_init <- function(estimates_og, group) {
 
 # Gets all parameter estimated, group to choose and returns narrowed estimates
 narrow_group <- function(all_estimates, groups) {
+
   needed <- data.frame(parameter = all_estimates$parameter)
   for(group in groups) {
     narrowed <- all_estimates %>% 
@@ -548,6 +549,7 @@ read_all_csv <- function(datapath, parameter_names) {
   dfs <- data.frame()
   for (filename in list_files_with_exts(datapath, "csv")) {
     df <- read.csv(filename)
+    df$p_test_nonari <- df$p_test_nonari / df$p_test_ari # Recover prob rat
     df <- calc_useful(df) %>% take_averages(parameter_names)
     df$filename <- basename(filename)
     dfs <- rbind(dfs, df)

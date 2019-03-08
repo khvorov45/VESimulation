@@ -15,10 +15,6 @@ sim_pop <- function(pop_est) {
     pop_est <- rbind(pop_est, par_entry)
   }
   
-  # Format p_test_nonari
-  pop_est["p_test_nonari",] <- 
-    pop_est["p_test_nonari",] * pop_est["p_test_ari",]
-
   n_groups <- ncol(pop_est)
   
   pop_calcs <- data.frame() # For the output
