@@ -132,7 +132,8 @@ graph_fixed_var <- function(
 ) {
   
   # Deal how I express p_test_nonari (recover original probability ratio)
-  df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
+  #df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
+  # Changed meaning
 
   varied <- get_varied(df, varied)
   

@@ -36,7 +36,8 @@ graph_parameters <- function(args, usage_options, descriptions) {
       df <- calc_useful(df) %>% take_averages(all_parameters)
       
       # Deal how I express p_test_nonari (recover original probability ratio)
-      df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
+      #df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
+      # Changed meaning
       
       dfs <- rbind(dfs, df)
     }
