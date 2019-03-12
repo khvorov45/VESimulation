@@ -69,7 +69,9 @@ sim_pop_group <- function(parameters) {
     sum((tested==1) & (flu==0)), 1, 1-parameters["spec_flu"]
   )
   
-  pop <- data.frame(vac_true,vac_mes,flu,nonflu,ari,sympt,clin,tested,testout)
+  pop <- data.frame(
+    vac_true, vac_mes, flu, nonflu, ari, sympt, clin, tested, testout
+  )
   
   return(pop)
 }

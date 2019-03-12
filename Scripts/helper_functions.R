@@ -409,12 +409,14 @@ su_pop_group <- function(df_group, group_name, parameters) {
 
 # Adds population averages
 add_overall <- function(pop_summary, par_names) {
-  to_sum <- c("case_vac","case_unvac","cont_vac","cont_unvac","prop","nsam")
+  to_sum <- c(
+    "case_vac", "case_unvac", "cont_vac", "cont_unvac" , "prop", "nsam"
+  )
   to_av <- par_names[!(par_names %in% c("prop","nsam"))]
   pop_summary_overall <- pop_summary %>% 
-    mutate_at(vars(to_av),funs(.*prop)) %>%
+    mutate_at(vars(to_av), funs(. * prop)) %>%
     group_by(type) %>% 
-    summarise_at(vars(to_sum, to_av),funs(sum)) %>% 
+    summarise_at(vars(to_sum, to_av), funs(sum)) %>% 
     mutate(name = "overall")
   pop_summary_overall <- rbind(pop_summary, pop_summary_overall)
   return(pop_summary_overall)

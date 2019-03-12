@@ -76,6 +76,39 @@ build_def_vary_tables <- function(filenames) {
     cat("Variation table saved to:", vary_table_filename, "\n")
   }
   
+  # Make the vary table for multiple groups
+  prop_mult <- list(
+    "children" = c(0.33, 0.7, 0.15, 0.15),
+    "adults" = c(0.33, 0.15, 0.7, 0.15),
+    "elderly" = c(0.33, 0.15, 0.15, 0.7)
+  )
+  get_mult_list <- function(low, mid, high) {
+    out <- list(
+      "children" = c(low, mid, high, high, low, low),
+      "adults" = c(low, mid, high, low, high, low),
+      "elderly" = c(low, mid, high, low, low, high)
+    )
+    return(out)
+  }
+  table_mult1 <- list(
+    "prop" = prop_mult,
+    "p_vac" = get_mult_list(0.05, 0.3, 0.5),
+    "sens_vac" = get_mult_list(0.9, 0.95, 1),
+    "spec_vac" = get_mult_list(0.7, 0.85, 1),
+    "VE" = get_mult_list(0.1, 0.5, 0.9),
+    "IP_flu" = get_mult_list(0.01, 0.03, 0.05),
+    "IP_nonflu" = get_mult_list(0.08, 0.1, 0.12),
+    "p_sympt_ari" = get_mult_list(0.1, 0.5, 0.9),
+    "p_clin_ari" = get_mult_list(0.1, 0.5, 0.9),
+    "p_test_ari" = get_mult_list(0.1, 0.5, 0.9),
+    "p_test_nonari" = get_mult_list(0, 0.15, 0.3),
+    "sens_flu" = get_mult_list(0.5, 0.75, 1),
+    "spec_flu" = get_mult_list(0.9, 0.95, 1)
+  )
+  vary_table_filename <- "vary_table_mult.json"
+  cat(toJSON(table_mult1, pretty = T), file = vary_table_filename)
+  cat("Variation table saved to:", vary_table_filename, "\n")
+  
   cat("Done with vary tables\n")
 }
 
