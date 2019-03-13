@@ -305,8 +305,6 @@ format_estimates_init <- function(estimates_og, group) {
   if (n_groups == 1) {
     pop_est["prop", ] <- 1 # Only relevant when multiple groups are present
     pop_est["p_clin_ari", ] <- 1 # No absolute estimates
-  } else {
-    pop_est["prop", ] <- pop_est["prop", ] / sum(pop_est["prop", ]) # Normalise
   }
 
   # Convert to list:
@@ -338,10 +336,14 @@ format_estimates_final <- function(pop_est, nsam) {
 
   # Add nsam here:
   pop_est[["nsam"]] <- list()
-  # Hope prop attribute isn't wierd
+  # Multiply total by normalised proportion
   groups <- names(pop_est[["prop"]])
+  sumprop <- 0
+  for (group in groups) {
+    sumprop <- sumprop + pop_est[["prop"]][[group]]
+  }
   for(group in groups) {
-    pop_est[["nsam"]][[group]] <- pop_est[["prop"]][[group]]*nsam
+    pop_est[["nsam"]][[group]] <- pop_est[["prop"]][[group]]*nsam/sumprop
   }
   
   return(pop_est)
