@@ -343,7 +343,8 @@ format_estimates_final <- function(pop_est, nsam) {
     sumprop <- sumprop + pop_est[["prop"]][[group]]
   }
   for(group in groups) {
-    pop_est[["nsam"]][[group]] <- pop_est[["prop"]][[group]]*nsam/sumprop
+    pop_est[["prop"]][[group]] <- pop_est[["prop"]][[group]]/sumprop
+    pop_est[["nsam"]][[group]] <- pop_est[["prop"]][[group]]*nsam
   }
   
   return(pop_est)
