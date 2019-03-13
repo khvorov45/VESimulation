@@ -306,7 +306,7 @@ format_estimates_init <- function(estimates_og, group) {
     pop_est["prop", ] <- 1 # Only relevant when multiple groups are present
     pop_est["p_clin_ari", ] <- 1 # No absolute estimates
   } else {
-    pop_est["prop", ] <- pop_est["prop", ] / sum(pop_est["prop", ] # Normalise
+    pop_est["prop", ] <- pop_est["prop", ] / sum(pop_est["prop", ]) # Normalise
   }
 
   # Convert to list:
