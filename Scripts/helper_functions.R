@@ -519,14 +519,14 @@ get_minmax <- function(data_filepaths, var) {
 get_varied <- function(df, possibilities) {
   nms_all <- names(df)
   nms_all <- nms_all[nms_all %in% possibilities]
-  is_varied <- function(col) {
-    if (length(unique(na.omit(col))) > 1) return(TRUE)
-    else return(FALSE)
-  }
-  varied <- sapply(df[ , nms_all], is_varied)
-
-  varied <- names(varied)[varied]
-
+  sumunique <- function(vec) length(unique(vec))
+  df <- df %>% 
+    filter(name != "overall") %>%
+    group_by(name) %>%
+    summarise_at(vars(nms_all), funs(sumunique)) %>%
+    ungroup() %>%
+    summarise_at(vars(nms_all), funs(max))
+  varied <- colnames(df)[df[1, ] > 1]
   return(varied)
 }
 
