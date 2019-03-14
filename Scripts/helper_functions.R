@@ -441,8 +441,11 @@ calc_useful <- function(df_cc) {
 take_averages <- function(pop_many, variants) {
   
   pop_avg <- pop_many %>% 
-    mutate(VE_true = VE) %>%
-    group_by_at(vars(c(variants, "name", "type", "VE_true"))) %>%
+    mutate(
+      VE_true = VE, 
+      ncall = cumsum(run - lag(run, default = 0) < 0) + 1
+    ) %>%
+    group_by_at(vars(c(variants, "ncall", "name", "type", "VE_true"))) %>%
     summarise(
       VE_est_mean = mean(VE_est), VE_est_sd = sd(VE_est), 
       n_study_mean = mean(n_study)
@@ -552,12 +555,36 @@ is_fixed_var <- function(df, varied) {
 # Reads all csv files in a folder and aggregates them for graphing
 #------------------------------------------------------------------------------
 
-read_all_csv <- function(datapath, parameter_names) {
+read_all_csv <- function(
+  datapath, parameter_names, max_var = 1, ggfriend = FALSE
+) {
   dfs <- data.frame()
   for (filename in list_files_with_exts(datapath, "csv")) {
     df <- read.csv(filename)
-    df$p_test_nonari <- df$p_test_nonari / df$p_test_ari # Recover prob rat
+    var <- get_varied(df, parameter_names)
+    if (length(var) > max_var) {
+      cat(
+        "File: ", filename, "\n", 
+        "variant amount is greater than ", max_var, ", skipped\n",
+        sep = ""
+      )
+      next
+    }
     df <- calc_useful(df) %>% take_averages(parameter_names)
+    df <- as.data.frame(df)
+    
+    # For ggplot friendliness
+    if (ggfriend) {
+      if (max_var != 1) {
+        if (!warned) {
+          cat("Cannot easily make long with non-one variant amount\n")
+          warned <- TRUE
+        }
+        next
+      }
+      df$value <- df[ , var]
+      df$varied <- var
+    }
     df$filename <- basename(filename)
     dfs <- rbind(dfs, df)
   }
