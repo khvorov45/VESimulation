@@ -9,6 +9,6 @@
 "p_sympt_ari",1,1,1,1,1,1,1,1,0.84,0.84,0.84,"Probability of the ARI being symptomatic"
 "p_clin_ari",1,1,1,1,1,1,1,1,1,0.4,1,"Relative probability of being clinically assessed as having ARI when it is symptomatic"
 "p_test_ari",1,1,1,1,1,1,1,1,0.17,0.35,0.22,"Tested probability for clinically assessed ARI"
-"p_test_nonari",1,1,1,1,1,1,1,1,0.01,0.01,0.01,"Tested probability for everyone without clinically assessed ARI"
+"p_test_nonari",1,1,1,1,1,1,1,1,0.15,0.15,0.15,"Tested probability for everyone without clinically assessed ARI"
 "sens_flu",1,0.95,1,1,1,1,1,1,0.86,0.86,0.86,"Sensitivity of influenza test"
 "spec_flu",1,1,0.95,1,1,1,1,1,0.984,0.984,0.984,"Specificity of influenza test"
