@@ -538,13 +538,14 @@ get_varied <- function(df, possibilities) {
 #------------------------------------------------------------------------------
 
 is_fixed_var <- function(df, varied) {
-  len_un <- function(vec) length(unique(na.omit(vec)))>1
+  len_un <- function(vec) length(unique(na.omit(vec))) > 1
   vec <- df %>% 
-    mutate(call = cumsum(run - lag(run, default=0) < 0) + 1) %>%
-    select_at(vars(c(varied,"call"))) %>%
-    group_by(call) %>%
+    mutate(call = cumsum(run - lag(run, default = 0) < 0) + 1) %>%
+    select_at(vars(c(varied, "call", "name"))) %>%
+    group_by(name, call) %>%
     summarise_all(funs(len_un)) %>%
-    select(-call) %>%
+    ungroup() %>%
+    select(-call, -name) %>%
     summarise_all(funs(any)) %>%
     slice(1) %>%
     unlist()

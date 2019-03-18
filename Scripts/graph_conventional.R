@@ -36,15 +36,13 @@ make_graph <- function(
     cat("File:",data_file,"\n")
    
     df <- read.csv(data_file)
-
-    # Do not graph multiple groups
-    if("overall" %in% unique(df$name)) {
-      cat("Multiple groups found, skipping\n\n")
-      amount_done <- amount_done + 1
-      next
-    }
     
     varied <- get_varied(df, all_variants)
+    
+    if (is.na(varied)) {
+      cat("did not find eny varied parameter, skipped")
+      next
+    }
     
     fixed_var <- is_fixed_var(df, varied)
 
@@ -57,11 +55,13 @@ make_graph <- function(
     graph_save_dir <- file.path(args_processed$save_directory, graph_filename)
 
     # Choose what graph to make
-    if (fixed_var) graph_fixed_var(
-      df, varied, descriptions, args_processed$errors, 
-      args_processed$sample_size,
-      ylims, graph_save_dir, graph_device
-    )
+    if (fixed_var) {
+      graph_fixed_var(
+        df, varied, descriptions, args_processed$errors, 
+        args_processed$sample_size,
+        ylims, graph_save_dir, graph_device
+      )
+    }
     else {
       graph_prob_var(df, varied, descriptions, graph_save_dir, graph_device)
     }

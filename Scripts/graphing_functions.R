@@ -130,10 +130,6 @@ graph_fixed_var <- function(
   df, varied, descriptions, errors, sample_size, ylims, graph_save_dir, 
   graph_device
 ) {
-  
-  # Deal how I express p_test_nonari (recover original probability ratio)
-  #df[, "p_test_nonari"] <- df[, "p_test_nonari"] / df[ , "p_test_ari"]
-  # Changed meaning
 
   varied <- get_varied(df, varied)
   
@@ -161,24 +157,30 @@ graph_fixed_var <- function(
   
   y_axis <- "VE_est_mean"
   
-  cat("Graphing",x_axis,"on x;",y_axis,"on y")
+  cat("Graphing", x_axis, "on x;", y_axis, "on y")
   
   if (!is.null(facet_variable)) {
     cat("; faceting by", facet_variable,"\n")
   } else cat("\n")
-
-  pl <- graph_base_1(
-    df, descriptions, errors, sample_size, x_axis, y_axis, ylims
-  )
+  
+  if (length(unique(df$name)) > 1) {
+    pl <- graph_base_1_mixed(
+      df, descriptions, errors, sample_size, x_axis, y_axis, ylims
+    )
+    save_dimensions <- c(15, 15)
+  } else {
+    pl <- graph_base_1(
+      df, descriptions, errors, sample_size, x_axis, y_axis, ylims
+    )
+    save_dimensions <- c(10, 6)
+  }
 
   if (!is.null(facet_variable)) {
     pl <- add_facets(pl, facet_variable)
-    save_dimensions <- c(10, 10)
-  } else {
-    save_dimensions <- c(7, 4)
+    save_dimensions <- c(20, 20)
   }
 
-  save_units <- "in"
+  save_units <- "cm"
 
   save_graph(
     pl, graph_save_dir, graph_device, save_units, save_dimensions
@@ -191,25 +193,10 @@ graph_base_1 <- function(
 ) {
   x_name <- descriptions[x]
 
-  pl <- ggplot(
-    data = df, 
-    mapping = aes_string(x = x, y = y)
-    ) + theme_bw() + 
-    
-    geom_hline(
-      aes(yintercept = df$VE_true), 
-      linetype = 5,
-      lwd = 1
-    ) + 
-    
+  pl <- ggplot(df, aes_string(x = x, y = y)) + theme_bw() + 
+    geom_hline(aes(yintercept = df$VE_true), linetype = 5, lwd = 1) + 
     geom_line(mapping = aes(col = type), na.rm=T) +
-    
-    geom_point(
-      aes(fill = type, shape = type),
-      size = 4,
-      na.rm = T
-    ) +
-    
+    geom_point(aes(fill = type, shape = type),size = 4,na.rm = T) +
     scale_x_continuous(name = x_name) +
     scale_y_continuous(name = "Estimated VE", limits = ylims) + 
     scale_color_manual(
@@ -262,6 +249,31 @@ graph_base_1 <- function(
     pl <- pl + 
       geom_abline(intercept = 0, slope = 1)
   }
+    
+  return(pl)
+}
+
+# Base graph for 1 varied parameter with multiple age groups present
+graph_base_1_mixed <- function(
+  df, descriptions, errors, sample_size, x, y, ylims=c(NA,NA)
+) {
+  x_name <- descriptions[x]
+  
+  pl <- ggplot(df, aes_string(x = x, y = y)) + theme_bw() + 
+    geom_hline(aes(yintercept = VE_true), linetype = "3333") + 
+    geom_hline(yintercept = 0, color = "magenta", linetype = "3111") +
+    geom_point(aes(shape = type, color = type)) + 
+    geom_hline(aes_string(yintercept = y, linetype = "type", color = "type")) + 
+    facet_grid(cols = vars(name), rows = vars(ncall)) +
+    xlab(x_name) + ylab("VE estimate") +
+    theme(
+      legend.position = "bottom", 
+      legend.box.spacing = unit(0, "mm"),
+      panel.grid.minor = element_blank(),
+      panel.spacing.x = unit(4, "points"),
+      panel.spacing.y = unit(0, "points"),
+      axis.text.x = element_text(angle = 90, hjust = 1)
+    )
   
   return(pl)
 }
