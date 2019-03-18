@@ -96,8 +96,8 @@ build_def_vary_tables <- function(filenames) {
     "sens_vac" = get_mult_list(0.9, 0.95, 1),
     "spec_vac" = get_mult_list(0.7, 0.85, 1),
     "VE" = get_mult_list(0.1, 0.5, 0.9),
-    "IP_flu" = get_mult_list(0.01, 0.03, 0.05),
-    "IP_nonflu" = get_mult_list(0.08, 0.1, 0.12),
+    "IP_flu" = get_mult_list(0.05, 0.1, 0.15),
+    "IP_nonflu" = get_mult_list(0.1, 0.15, 0.2),
     "p_sympt_ari" = get_mult_list(0.1, 0.5, 0.9),
     "p_clin_ari" = get_mult_list(0.1, 0.5, 0.9),
     "p_test_ari" = get_mult_list(0.1, 0.5, 0.9),
@@ -105,7 +105,7 @@ build_def_vary_tables <- function(filenames) {
     "sens_flu" = get_mult_list(0.5, 0.75, 1),
     "spec_flu" = get_mult_list(0.9, 0.95, 1)
   )
-  vary_table_filename <- "vary_table_mult.json"
+  vary_table_filename <- "_vary_table_mult.json"
   cat(toJSON(table_mult1, pretty = T), file = vary_table_filename)
   cat("Variation table saved to:", vary_table_filename, "\n")
   
@@ -137,28 +137,20 @@ ref_vary_table_full <- function() {
 }
 
 ref_vary_table_constrained <- function() {
-  cycle_0.05_to_0.5 <- seq(0.05, 0.5, 0.05)
-  cycle_0.9_to_1 <- seq(0.9, 1, 0.02)
-  cycle_0.7_to_1 <- seq(0.7, 1, 0.05)
-  cycle_0.1_to_0.9 <- seq(0.1, 0.9, 0.1)
-  cycle_0.01_to_0.05 <- seq(0.01, 0.05, 0.01)
-  cycle_0.08_to_0.12 <- seq(0.08, 0.12, 0.01)
-  cycle_0_to_0.3 <- seq(0, 0.3, 0.05)
-  cycle_0.5_to_1 <- seq(0.5, 1, 0.1)
-  
+
   vary_table <- list(
-    "p_vac" = cycle_0.05_to_0.5,
-    "sens_vac" = cycle_0.9_to_1,
-    "spec_vac" = cycle_0.7_to_1,
-    "VE" = cycle_0.1_to_0.9,
-    "IP_flu" = cycle_0.01_to_0.05,
-    "IP_nonflu" = cycle_0.08_to_0.12,
-    "p_sympt_ari" = cycle_0.1_to_0.9,
-    "p_clin_ari" = cycle_0.1_to_0.9,
-    "p_test_ari" = cycle_0.1_to_0.9,
-    "p_test_nonari" = cycle_0_to_0.3,
-    "sens_flu" = cycle_0.5_to_1,
-    "spec_flu" = cycle_0.9_to_1
+    "p_vac" = seq(0.05, 0.5, 0.05),
+    "sens_vac" = seq(0.9, 1, 0.02),
+    "spec_vac" = seq(0.7, 1, 0.05),
+    "VE" = seq(0.1, 0.9, 0.1),
+    "IP_flu" = seq(0.05, 0.15, 0.01),
+    "IP_nonflu" = seq(0.1, 0.2, 0.01),
+    "p_sympt_ari" = seq(0.1, 0.9, 0.1),
+    "p_clin_ari" = seq(0.1, 0.9, 0.1),
+    "p_test_ari" = seq(0.1, 0.9, 0.1),
+    "p_test_nonari" = seq(0, 0.3, 0.05),
+    "sens_flu" = seq(0.5, 1, 0.1),
+    "spec_flu" = seq(0.9, 1, 0.02)
   )
   
   return(vary_table)
