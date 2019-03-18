@@ -3,8 +3,10 @@
 #------------------------------------------------------------------------------
 
 make_graph <- function(
-  args, usage_options, all_variants, descriptions
+  args, usage_options, descriptions
 ) {
+  
+  all_variants <- names(descriptions)
 
   args_processed <- process_args(args, usage_options)
   if (!(dir.exists(args_processed$save_directory)))
@@ -121,7 +123,6 @@ if (sys.nframe() == 0) {
   usage_options <- default_config$graph_usage
 
   # Variants and descriptions for graphing
-  all_variants <- names(default_config$vary_table)
   estimates_data_name <- paste0( 
     filenames$default_ind, filenames$shared_data, ".", filenames$data_ext
   )
@@ -135,6 +136,6 @@ if (sys.nframe() == 0) {
   #----------------------------------------------------------------------------
   
   make_graph(
-    commandArgs(trailingOnly = T), usage_options, all_variants, descriptions
+    commandArgs(trailingOnly = T), usage_options, descriptions
   )
 }
