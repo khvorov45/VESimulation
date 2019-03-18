@@ -24,7 +24,7 @@ make_graph <- function(
     cat("min", ylims[1],"max",ylims[2],"\n\n")
   }
   else {
-    cat("Not fixing y\n\n")
+    cat("Not fixing y between different graph files\n\n")
     ylims <- c(NA,NA)
   }
 
@@ -49,6 +49,12 @@ make_graph <- function(
     fixed_var <- is_fixed_var(df, varied)
 
     df <- calc_useful(df) %>% take_averages(all_variants)
+    
+    # Reorder the groups for faceting
+    df$name <- as.factor(df$name)
+    for (group in c("special_no", "elderly", "adults", "children")) {
+      if (group %in% df$name) df$name <- relevel(df$name, group)
+    }
 
     graph_filename <- unique(
       gsub("[.][[:alpha:]]{1,3}$","", basename(data_file))
