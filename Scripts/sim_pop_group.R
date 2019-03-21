@@ -7,7 +7,7 @@ sim_pop_group <- function(parameters) {
   
   nsam <- parameters["nsam"]
   
-  empty_vec <- rep(0,nsam)
+  empty_vec <- rep(0, nsam)
   vac_true <- empty_vec
   vac_mes <- empty_vec
   flu <- empty_vec
@@ -16,40 +16,45 @@ sim_pop_group <- function(parameters) {
   sympt <- empty_vec
   clin <- empty_vec
   tested <- empty_vec
-  testout <- rep(NA,nsam)
+  testout <- rep(NA, nsam)
   
   vac_true <- rbinom(nsam, 1, parameters["p_vac"])
   
-  vac_mes[vac_true==1] <- rbinom(sum(vac_true==1), 1, parameters["sens_vac"])
-  vac_mes[vac_true==0] <- rbinom(sum(vac_true==0), 1, 1-parameters["spec_vac"])
+  vac_mes[vac_true == 1] <- rbinom(
+    sum(vac_true == 1), 1, parameters["sens_vac"]
+  )
+  vac_mes[vac_true == 0] <- rbinom(
+    sum(vac_true == 0), 1, 1 - parameters["spec_vac"]
+  )
   
   #----------------------------------------------------------------------------
   
   vac_prof <- rmultinom(
-    n=sum(vac_true==1), 
-    size=1, 
-    prob=c(
-      parameters["IP_flu"]*(1-parameters["VE"]),
+    n = sum(vac_true == 1), 
+    size = 1, 
+    prob = c(
+      parameters["IP_flu"] * (1 - parameters["VE"]),
       parameters["IP_nonflu"],
-      (1-parameters["IP_flu"]*(1-parameters["VE"])-parameters["IP_nonflu"])
+      1 - parameters["IP_flu"] * (1 - parameters["VE"]) - 
+        parameters["IP_nonflu"]
     )
   )
   
   unvac_prof <- rmultinom(
-    n=sum(vac_true==0), 
-    size=1, 
+    n = sum(vac_true == 0), 
+    size = 1, 
     prob=c(
       parameters["IP_flu"],
       parameters["IP_nonflu"],
-      (1-parameters["IP_flu"]-parameters["IP_nonflu"])
+      1 - parameters["IP_flu"] - parameters["IP_nonflu"]
     )
   )
   
-  flu[vac_true==1] <- vac_prof[1,]
-  flu[vac_true==0] <- unvac_prof[1,]
+  flu[vac_true == 1] <- vac_prof[1, ]
+  flu[vac_true == 0] <- unvac_prof[1, ]
   
-  nonflu[vac_true==1] <- vac_prof[2,]
-  nonflu[vac_true==0] <- unvac_prof[2,]
+  nonflu[vac_true == 1] <- vac_prof[2, ]
+  nonflu[vac_true == 0] <- unvac_prof[2, ]
   
   ari <- flu + nonflu
   
@@ -66,7 +71,7 @@ sim_pop_group <- function(parameters) {
     sum((tested==1) & (flu==1)), 1, parameters["sens_flu"]
   )
   testout[(tested==1) & (flu==0)] <- rbinom(
-    sum((tested==1) & (flu==0)), 1, 1-parameters["spec_flu"]
+    sum((tested==1) & (flu==0)), 1, 1 - parameters["spec_flu"]
   )
   
   pop <- data.frame(
