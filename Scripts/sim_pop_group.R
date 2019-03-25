@@ -60,18 +60,18 @@ sim_pop_group <- function(parameters) {
   
   #----------------------------------------------------------------------------
   
-  sympt[ari==1] <- rbinom(sum(ari==1), 1, parameters["p_sympt_ari"])
+  sympt[ari == 1] <- rbinom(sum(ari == 1), 1, parameters["p_sympt_ari"])
   
-  clin[sympt==1] <- rbinom(sum(sympt==1), 1, parameters["p_clin_ari"])
+  clin[sympt == 1] <- rbinom(sum(sympt == 1), 1, parameters["p_clin_ari"])
   
-  tested[clin==1] <- rbinom(sum(clin==1), 1, parameters["p_test_ari"]) 
-  tested[clin==0] <- rbinom(sum(clin==0), 1, parameters["p_test_nonari"]) 
+  tested[clin == 1] <- rbinom(sum(clin == 1), 1, parameters["p_test_ari"]) 
+  tested[clin == 0] <- rbinom(sum(clin == 0), 1, parameters["p_test_nonari"]) 
   
-  testout[(tested==1) & (flu==1)] <- rbinom(
-    sum((tested==1) & (flu==1)), 1, parameters["sens_flu"]
+  testout[(tested == 1) & (flu == 1)] <- rbinom(
+    sum((tested == 1) & (flu == 1)), 1, parameters["sens_flu"]
   )
-  testout[(tested==1) & (flu==0)] <- rbinom(
-    sum((tested==1) & (flu==0)), 1, 1 - parameters["spec_flu"]
+  testout[(tested == 1) & (flu == 0)] <- rbinom(
+    sum((tested == 1) & (flu == 0)), 1, 1 - parameters["spec_flu"]
   )
   
   pop <- data.frame(
