@@ -16,9 +16,12 @@ run_user_profile <- function(
   
   variants <- names(vary_table)
   
-  groups <- user_profile$allowed_groups
-  if(is.matrix(groups)) groups <- list(groups[1,]) # Only if one nested list
-  
+  all_groups <- standardise_names(colnames(user_profile$user_data))
+  allowed_groups <- user_profile$allowed_groups
+  if(is.matrix(allowed_groups)) 
+    allowed_groups <- list(groups[1, ]) # Only if one nested list
+  groups <- build_groups(allowed_groups, all_groups)
+
   variant_combinations <- get_variant_combinations(
     names(vary_table), user_profile$sim_options$vary_rule
   )

@@ -111,6 +111,23 @@ register_par <- function(core_decrease) {
 }
 
 #------------------------------------------------------------------------------
+# Returns all groups to be varied
+#------------------------------------------------------------------------------
+
+build_groups <- function(allowed_groups, all_groups) {
+  groups_resolved <- c()
+  for (group in allowed_groups) {
+    if (length(group) > 1) {
+      cat("note: regex not supported in nested lists\n")
+      next
+    }
+    group_resolved <- all_groups[grepl(group, all_groups)]
+    groups_resolved <- c(groups_resolved, group_resolved)
+  }
+  return(groups_resolved)
+}
+
+#------------------------------------------------------------------------------
 # Returns all possible variant combinations
 #------------------------------------------------------------------------------
 
