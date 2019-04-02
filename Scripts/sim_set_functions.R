@@ -21,7 +21,7 @@ sim_set_functions <- function(pop_est, settings) {
   for(variant_name in names(settings$to_vary)) {
     for(group_name in settings$vary_in_group) {
       vary_info <- settings$to_vary[[variant_name]][[group_name]]
-      if(is.na(vary_info[1])) 
+      if (is.na(vary_info[1])) 
         stop("no variantion specified for ", variant_name, " ", group_name)
       if(!is.numeric(vary_info[1])) {
         if(vary_info[1] %in% names(func_dic)) {
