@@ -557,7 +557,8 @@ is_fixed_var <- function(df, varied) {
 #------------------------------------------------------------------------------
 
 read_all_csv <- function(
-  datapath, parameter_names, max_var = 1, ggfriend = FALSE
+  datapath, parameter_names, max_var = 1, ggfriend = FALSE, write = FALSE,
+  path = ""
 ) {
   dfs <- data.frame()
   for (filename in list_files_with_exts(datapath, "csv")) {
@@ -573,6 +574,12 @@ read_all_csv <- function(
     }
     df <- calc_useful(df) %>% take_averages(parameter_names)
     df <- as.data.frame(df)
+    
+    if (write) {
+      write.csv(
+      df, file = file.path(path, basename(filename)), row.names = FALSE
+    )
+    }
     
     # For ggplot friendliness
     if (ggfriend) {
