@@ -576,6 +576,8 @@ is_fixed_var <- function(df, varied) {
 read_all_csv <- function(
   datapath, parameter_names, max_var = 1, ggfriend = FALSE
 ) {
+  warned <- FALSE
+
   dfs <- data.frame()
   for (filename in list_files_with_exts(datapath, "csv")) {
     df <- read.csv(filename)
