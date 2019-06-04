@@ -1,14 +1,15 @@
- #------------------------------------------------------------------------------
 # The script that will run the simulation for all the possible combinations
-# as per user settings profile
-#------------------------------------------------------------------------------
+#   as per user settings profile
+# Arseniy Khvorov
+# Created 2019/01/01
+# Last edit 2019/06/04
 
 run_user_profile <- function(
   save_directory, user_profile, scripts_dir
 ) {
 
-  if(length(save_directory) != 1) stop("Too many arguments in save_directory")
-  if(save_directory==F) stop("save_directory missing")
+  if (length(save_directory) != 1) stop("Too many arguments in save_directory")
+  if (save_directory == F) stop("save_directory missing")
   
   vary_table <- user_profile$vary_table
   
@@ -17,7 +18,7 @@ run_user_profile <- function(
   variants <- names(vary_table)
   
   groups <- user_profile$allowed_groups
-  if(is.matrix(groups)) groups <- list(groups[1,]) # Only if one nested list
+  if (is.matrix(groups)) groups <- list(groups[1, ]) # Only if one nested list
   
   variant_combinations <- get_variant_combinations(
     names(vary_table), user_profile$sim_options$vary_rule
