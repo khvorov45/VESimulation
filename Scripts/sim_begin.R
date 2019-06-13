@@ -1,6 +1,7 @@
- #------------------------------------------------------------------------------
-# THis function starts data generation
-#------------------------------------------------------------------------------
+# This function starts data generation
+# Arseniy Khvorov
+# Created 2018/12/01
+# Last edit 2019/06/04
 
 sim_begin <- function(
   sim_args, user_profile, scripts_dir
