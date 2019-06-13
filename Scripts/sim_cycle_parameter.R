@@ -9,12 +9,12 @@ sim_cycle_parameter <- function(pop_est, settings) {
     
     # Do another format pass and log it
     pop_est <- format_estimates_final(pop_est, settings$nsam)
-	  double_cat(
-      "estimates sent (final format):\n", 
-      file = settings$save_locs$full_log, FALSE
-    )
-    double_print(pop_est, file = settings$save_locs$full_log, FALSE)
-    double_cat("\n", file = settings$save_locs$full_log, FALSE)
+	  #double_cat(
+    #  "estimates sent (final format):\n", 
+    #  file = settings$save_locs$full_log, FALSE
+    #)
+    #double_print(pop_est, file = settings$save_locs$full_log, FALSE)
+    #double_cat("\n", file = settings$save_locs$full_log, FALSE)
 	
     data <- sim_repeat(
       pop_est, settings$Npop, settings$save_locs$parallel_log, 
@@ -42,14 +42,11 @@ sim_cycle_parameter <- function(pop_est, settings) {
     for(group_name in group_names) {
       pop_est[[par_name]][[group_name]] <- 
         variant_used[[par_name]][[group_name]][ind_par]
-      double_cat(
-        paste(
+      cat(
           "set", par_name, "in group", group_name, "to", 
           variant_used[[par_name]][[group_name]][ind_par], 
           "\n"
-        ), 
-	      file = settings$save_locs$full_log
-      )
+        )
     }
 
     data <- sim_cycle_parameter(pop_est, settings)

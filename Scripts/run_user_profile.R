@@ -61,6 +61,11 @@ run_user_profile <- function(
       )
     }
   }
+
+  # Clean-up
+  par_log <- file.path(save_directory, "parallel_log.txt")
+  if (file.exists(par_log)) invisible(file.remove(par_log))
+
   cat(
     "\nDone in ", round(sum(diffs),1), "s (", 
     round(sum(diffs)/60,1), "m)\n",sep=""

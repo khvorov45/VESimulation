@@ -239,14 +239,14 @@ get_save_locs <- function(
   data_filename <- paste0(filename,".csv")
   save_locs$data <- file.path(folder, data_filename)
 
-  text_filename <- paste0(filename, ".txt")
-  save_locs$settings <- file.path(folder, "settings_used", text_filename)
-  save_locs$parameters <- file.path(folder,"parameters_used",text_filename)
+  #text_filename <- paste0(filename, ".txt")
+  #save_locs$settings <- file.path(folder, "settings_used", text_filename)
+  #save_locs$parameters <- file.path(folder,"parameters_used",text_filename)
 
-  log_filename <- paste0(filename,".log")
-  save_locs$full_log_perm <- file.path(folder,"full_log",log_filename)
-  save_locs$full_log <- file.path(scripts_dir, "_current.log")
-  save_locs$parallel_log <- file.path(folder, "full_log", "parallel_log.txt")
+  #log_filename <- paste0(filename,".log")
+  #save_locs$full_log_perm <- file.path(folder,"full_log", log_filename)
+  #save_locs$full_log <- file.path(scripts_dir, "_current.log")
+  save_locs$parallel_log <- file.path(folder, "parallel_log.txt")
 
   # Create all the directories and files
   create_dir <- function(filepath) {
@@ -269,10 +269,11 @@ get_save_filename <- function(group, to_vary_names, vary_in_group) {
   group <- clean_names(group)
   to_vary_names <- clean_names(to_vary_names)
   filename <- paste0(
-    paste0(group,collapse="-"),"--", 
-    paste0(to_vary_names,collapse="-"))
-  if(all(group %in% vary_in_group)) return(filename)
-  filename <- paste0(filename,"--",paste0(vary_in_group,collapse='-'))
+    paste0(group, collapse = "-"), "--", 
+    paste0(to_vary_names, collapse = "-")
+  )
+  if (all(group %in% vary_in_group)) return(filename)
+  filename <- paste0(filename, "--", paste0(vary_in_group,collapse = "-"))
   return(filename)
 }
 
@@ -459,15 +460,15 @@ take_averages <- function(pop_many, variants) {
 # Logging funtions - optionally print to stdout and a file
 #------------------------------------------------------------------------------
 
-double_cat <- function(msg, file, verbose = TRUE) {
-  if(verbose) cat(msg)
-  cat(msg, file = file, append = T)
-}
+#double_cat <- function(msg, file, verbose = TRUE) {
+#  if(verbose) cat(msg)
+#  cat(msg, file = file, append = T)
+#}
 
-double_print <- function(printdata, file, verbose = TRUE) {
-  if(verbose) print(printdata)
-  capture.output(print(printdata), file = file, append = T)
-}
+#double_print <- function(printdata, file, verbose = TRUE) {
+#  if(verbose) print(printdata)
+#  capture.output(print(printdata), file = file, append = T)
+#}
 
 #------------------------------------------------------------------------------
 # Copies info folders
