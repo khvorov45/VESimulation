@@ -474,30 +474,30 @@ take_averages <- function(pop_many, variants) {
 # Copies info folders
 #------------------------------------------------------------------------------
 
-copy_info <- function(from, to) {
+# copy_info <- function(from, to) {
 
-  # Set up directories
-  to_copy <- c("full_log","parameters_used","settings_used")
-  start_dirs <- file.path(from, to_copy)
-  end_dirs <- file.path(to, to_copy)
+#   # Set up directories
+#   to_copy <- c("full_log","parameters_used","settings_used")
+#   start_dirs <- file.path(from, to_copy)
+#   end_dirs <- file.path(to, to_copy)
 
-  # Create directories
-  end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
-  start_f <- function(dir) {
-    if(!(dir.exists(dir))) cat("info folder", dir, "not found\n")
-  }
-  lapply(start_dirs, start_f)
-  lapply(end_dirs, end_f)
+#   # Create directories
+#   end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
+#   start_f <- function(dir) {
+#     if(!(dir.exists(dir))) cat("info folder", dir, "not found\n")
+#   }
+#   lapply(start_dirs, start_f)
+#   lapply(end_dirs, end_f)
 
-  # Copy files
-  ind <- 0
-  for(dir in start_dirs) {
-    ind <- ind+1
-    files <- list.files(dir)
-    paths <- file.path(dir, files)
-    lapply(paths, file.copy, end_dirs[ind], overwrite=TRUE)
-  }
-}
+#   # Copy files
+#   ind <- 0
+#   for(dir in start_dirs) {
+#     ind <- ind+1
+#     files <- list.files(dir)
+#     paths <- file.path(dir, files)
+#     lapply(paths, file.copy, end_dirs[ind], overwrite=TRUE)
+#   }
+# }
 
 #------------------------------------------------------------------------------
 # Returns min and max of the specified variable in dfs
