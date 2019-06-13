@@ -172,7 +172,7 @@ graph_fixed_var <- function(
     pl <- graph_base_1(
       df, descriptions, errors, sample_size, x_axis, y_axis, ylims
     )
-    save_dimensions <- c(10, 6)
+    save_dimensions <- c(15, 10)
   }
 
   if (!is.null(facet_variable)) {
