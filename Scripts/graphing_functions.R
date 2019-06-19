@@ -167,12 +167,12 @@ graph_fixed_var <- function(
     pl <- graph_base_1_mixed(
       df, descriptions, errors, sample_size, x_axis, y_axis, ylims
     )
-    save_dimensions <- c(15, 15)
+    save_dimensions <- c(15, 7.5)
   } else {
     pl <- graph_base_1(
       df, descriptions, errors, sample_size, x_axis, y_axis, ylims
     )
-    save_dimensions <- c(15, 10)
+    save_dimensions <- c(20, 10)
   }
 
   if (!is.null(facet_variable)) {
@@ -211,7 +211,9 @@ graph_base_1 <- function(
       name = "Data type", values = c(21,24),
       labels = c("Administrative","Surveillance")
     ) +
-    theme(legend.position = "bottom", panel.grid.minor = element_blank())
+    theme(
+      legend.position = "bottom", panel.grid.minor = element_blank()
+    )
     
   if(errors) {
     pl <- pl +
@@ -247,7 +249,7 @@ graph_base_1 <- function(
   if(x == "VE") {
     pl <- remove_geom(pl, "hline")
     pl <- pl + 
-      geom_abline(intercept = 0, slope = 1)
+      geom_abline(intercept = 0, slope = 1, linetype = 5, lwd = 1)
   }
     
   return(pl)
@@ -259,21 +261,58 @@ graph_base_1_mixed <- function(
 ) {
   x_name <- descriptions[x]
   
-  pl <- ggplot(df, aes_string(x = x, y = y)) + theme_bw() + 
-    geom_hline(aes(yintercept = VE_true), linetype = "3333") + 
-    geom_hline(yintercept = 0, color = "magenta", linetype = "3111") +
-    geom_point(aes(shape = type, color = type)) + 
-    geom_hline(aes_string(yintercept = y, linetype = "type", color = "type")) + 
-    facet_grid(cols = vars(name), rows = vars(ncall)) +
-    xlab(x_name) + ylab("VE estimate") +
+  df1 <- df %>%
+    filter(name != "overall") %>%
+    group_by_at(vars("name", "type", x, "VE")) %>%
+    summarise(VE_est_mean = mean(VE_est_mean)) %>%
+    ungroup()
+  df2 <- df %>%
+    select_at(vars(one_of("VE_est_mean", "name", "type", x, "VE"))) %>%
+    filter(name == "overall")
+  pl <- rbind.data.frame(df1, df2) %>%
+    ggplot(
+      aes(
+        x = get(x), y = VE_est_mean, 
+        lty = type, pch = type, group = paste0(name, type)
+        )
+      ) + theme_bw() +
+    geom_hline(yintercept = 0, linetype = "3131", col = "blue", lwd = 1.1) +
+    geom_point(size = 3) + 
+    geom_line(lwd = 1) +
+    geom_hline(
+      aes(yintercept = VE), lty = "1111", col = "darkgreen", lwd = 1.1
+    ) +
+    scale_x_continuous(x_name) +
+    scale_y_continuous("Vaccine Efficacy") +
+    scale_linetype_discrete("Data Source") +
+    scale_shape_discrete("Data Source") +
+    facet_wrap(~name, nrow = 1) +
+    geom_text_repel(
+      data = subset(df, name == "overall" & type == "administrative"),
+      aes(label = ncall, y = 0.6), 
+      col = "blue", fontface = "bold", direction = "x", box.padding = 0.1
+    ) +
     theme(
-      legend.position = "bottom", 
-      legend.box.spacing = unit(0, "mm"),
-      panel.grid.minor = element_blank(),
-      panel.spacing.x = unit(4, "points"),
-      panel.spacing.y = unit(0, "points"),
-      axis.text.x = element_text(angle = 90, hjust = 1)
+      legend.position = "bottom", panel.spacing = unit(0, "lines"),
+      legend.box.spacing = unit(0, "lines"),
+      axis.text.x = element_text(angle = 90)
     )
+
+  # pl <- ggplot(df, aes_string(x = x, y = y)) + theme_bw() + 
+  #   geom_hline(aes(yintercept = VE_true), linetype = "3333") + 
+  #   geom_hline(yintercept = 0, color = "magenta", linetype = "3111") +
+  #   geom_point(aes(shape = type, color = type)) + 
+  #   geom_hline(aes_string(yintercept = y, linetype = "type", color = "type")) + 
+  #   facet_grid(cols = vars(name), rows = vars(ncall)) +
+  #   xlab(x_name) + ylab("VE estimate") +
+  #   theme(
+  #     legend.position = "bottom", 
+  #     legend.box.spacing = unit(0, "mm"),
+  #     panel.grid.minor = element_blank(),
+  #     panel.spacing.x = unit(4, "points"),
+  #     panel.spacing.y = unit(0, "points"),
+  #     axis.text.x = element_text(angle = 90, hjust = 1)
+  #   )
   
   return(pl)
 }

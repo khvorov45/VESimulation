@@ -420,9 +420,9 @@ add_overall <- function(pop_summary, par_names) {
   )
   to_av <- par_names[!(par_names %in% c("prop","nsam"))]
   pop_summary_overall <- pop_summary %>% 
-    mutate_at(vars(to_av), funs(. * prop)) %>%
+    mutate_at(vars(to_av), list(~function(.) . * prop)) %>%
     group_by(type) %>% 
-    summarise_at(vars(to_sum, to_av), funs(sum)) %>% 
+    summarise_at(vars(to_sum, to_av), list(sum)) %>% 
     mutate(name = "overall")
   pop_summary_overall <- rbind(pop_summary, pop_summary_overall)
   return(pop_summary_overall)
@@ -527,9 +527,9 @@ get_varied <- function(df, possibilities) {
   df <- df %>% 
     filter(name != "overall") %>%
     group_by(name) %>%
-    summarise_at(vars(nms_all), funs(sumunique)) %>%
+    summarise_at(vars(nms_all), list(sumunique)) %>%
     ungroup() %>%
-    summarise_at(vars(nms_all), funs(max))
+    summarise_at(vars(nms_all), list(max))
   varied <- colnames(df)[df[1, ] > 1]
   return(varied)
 }
@@ -544,10 +544,10 @@ is_fixed_var <- function(df, varied) {
     mutate(call = cumsum(run - lag(run, default = 0) < 0) + 1) %>%
     select_at(vars(c(varied, "call", "name"))) %>%
     group_by(name, call) %>%
-    summarise_all(funs(len_un)) %>%
+    summarise_all(list(len_un)) %>%
     ungroup() %>%
     select(-call, -name) %>%
-    summarise_all(funs(any)) %>%
+    summarise_all(list(any)) %>%
     slice(1) %>%
     unlist()
   return(!any(vec))

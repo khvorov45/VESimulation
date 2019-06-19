@@ -107,6 +107,7 @@ if (sys.nframe() == 0) {
   suppressMessages(library(tools))
   suppressMessages(library(ggpubr))
   suppressMessages(library(dplyr))
+  suppressMessages(library(ggrepel))
 
   #----------------------------------------------------------------------------
   # Temporary directory change
