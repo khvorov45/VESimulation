@@ -167,7 +167,7 @@ graph_fixed_var <- function(
     pl <- graph_base_1_mixed(
       df, descriptions, errors, sample_size, x_axis, y_axis, ylims
     )
-    save_dimensions <- c(15, 7.5)
+    save_dimensions <- c(15, 7)
   } else {
     pl <- graph_base_1(
       df, descriptions, errors, sample_size, x_axis, y_axis, ylims
@@ -269,17 +269,22 @@ graph_base_1_mixed <- function(
   df2 <- df %>%
     select_at(vars(one_of("VE_est_mean", "name", "type", x, "VE"))) %>%
     filter(name == "overall")
+  
+  if (x == "IP_flu") y_pos <- 0.6
+  else if (x == "p_test_nonari") y_pos <- 0.1
+  else y_pos <- 0.6
+
   pl <- rbind.data.frame(df1, df2) %>%
     ggplot(
       aes(
         x = get(x), y = VE_est_mean, pch = type, group = paste0(name, type), col = type
         )
       ) + theme_bw() +
-    geom_hline(yintercept = 0, linetype = "3131", col = "magenta", lwd = 1.1) +
+    geom_hline(yintercept = 0, linetype = "1111", col = "magenta", lwd = 1.1) +
     geom_point(size = 3) + 
     geom_line(lwd = 1) +
     geom_hline(
-      aes(yintercept = VE), lty = "1111", col = "darkgreen", lwd = 1.1
+      aes(yintercept = VE), lty = "3333", col = "black", lwd = 1.1
     ) +
     scale_x_continuous(x_name) +
     scale_y_continuous("Estimated VE") +
@@ -289,7 +294,7 @@ graph_base_1_mixed <- function(
     facet_wrap(~name, nrow = 1) +
     geom_text_repel(
       data = subset(df, name == "overall" & type == "administrative"),
-      aes(label = ncall, y = 0.6), 
+      aes(label = ncall, y = y_pos), 
       col = "blue", fontface = "bold", direction = "x", box.padding = 0.1
     ) +
     theme(
