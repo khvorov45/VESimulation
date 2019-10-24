@@ -1,16 +1,17 @@
-#------------------------------------------------------------------------------
 # Builds the default settings found in default folder. 
 # Will place the files wherever it is called from.
-#------------------------------------------------------------------------------
+# Arseniy Khvorov
+# Created 2019/01/01 
+# Last Edit 2019/06/19
 
-build_def_estimates <- function(filenames) {
+build_def_estimates <- function(filenames, estimates_url) {
   
   estimates_filename <- paste0(
     filenames$default_ind, filenames$shared_data, '.', filenames$data_ext
   )
   
   cat("\nRefreshing estimates... ")
-  estimates <- read_from_gs("Estimates","Table", skip = 1)
+  estimates <- read_from_gs(estimates_url, sheetname = 1, skip = 1)
   write.csv(estimates, estimates_filename, row.names = F)
   cat("Done\n")
   
@@ -33,11 +34,12 @@ build_def_groups <- function(filenames) {
   cat("Allowed groups saved to:", allowed_groups_filename, "\n")
 }
 
-read_from_gs <- function(filename, sheetname, skip = 0) {
+read_from_gs <- function(file_url, sheetname, skip = 0) {
   suppressMessages(
-    df <- gs_title(filename) %>% 
-      gs_read(ws = sheetname, skip = skip) %>% 
-      as.data.frame())
+    df <- gs_url(file_url, lookup = FALSE, visibility = "public") %>%
+      gs_read(ws = sheetname, skip = skip) %>%
+      as.data.frame()
+  )
   return(df)
 }
 
@@ -94,10 +96,10 @@ build_def_vary_tables <- function(filenames) {
     "prop" = prop_mult,
     "p_vac" = get_mult_list(0.05, 0.3, 0.5),
     "sens_vac" = get_mult_list(0.9, 0.95, 1),
-    "spec_vac" = get_mult_list(0.7, 0.85, 1),
+    "spec_vac" = get_mult_list(0.5, 0.75, 1),
     "VE" = get_mult_list(0.1, 0.5, 0.9),
     "IP_flu" = get_mult_list(0.05, 0.1, 0.15),
-    "IP_nonflu" = get_mult_list(0.1, 0.15, 0.2),
+    "IP_nonflu" = get_mult_list(0.1, 0.15, 0.3),
     "p_sympt_ari" = get_mult_list(0.1, 0.5, 0.9),
     "p_clin_ari" = get_mult_list(0.1, 0.5, 0.9),
     "p_test_ari" = get_mult_list(0.1, 0.5, 0.9),
@@ -140,17 +142,17 @@ ref_vary_table_constrained <- function() {
 
   vary_table <- list(
     "p_vac" = seq(0.05, 0.5, 0.05),
-    "sens_vac" = seq(0.9, 1, 0.02),
-    "spec_vac" = seq(0.7, 1, 0.05),
+    "sens_vac" = seq(0.9, 1, 0.01),
+    "spec_vac" = seq(0.5, 1, 0.05),
     "VE" = seq(0.1, 0.9, 0.1),
     "IP_flu" = seq(0.05, 0.15, 0.01),
-    "IP_nonflu" = seq(0.1, 0.2, 0.01),
+    "IP_nonflu" = seq(0.1, 0.3, 0.02),
     "p_sympt_ari" = seq(0.1, 0.9, 0.1),
     "p_clin_ari" = seq(0.1, 0.9, 0.1),
     "p_test_ari" = seq(0.1, 0.9, 0.1),
     "p_test_nonari" = seq(0, 0.3, 0.05),
-    "sens_flu" = seq(0.5, 1, 0.1),
-    "spec_flu" = seq(0.9, 1, 0.02)
+    "sens_flu" = seq(0.5, 1, 0.05),
+    "spec_flu" = seq(0.9, 1, 0.01)
   )
   
   return(vary_table)
@@ -204,7 +206,9 @@ if(sys.nframe()==0) {
   
   #----------------------------------------------------------------------------
   
-  build_def_estimates(filenames)
+  estimates_url <- "https://docs.google.com/spreadsheets/d/1qsN7G3I1Dse5eTNVr8D6O9d6SY5A94wBmVLCRjfh7Wk/edit?usp=sharing"
+
+  build_def_estimates(filenames, estimates_url)
   build_def_groups(filenames)
   build_def_vary_tables(filenames)
   

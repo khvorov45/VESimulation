@@ -11,7 +11,7 @@ graph_parameters <- function(args, usage_options, descriptions) {
   all_data_paths <- list_files_with_exts(
     args_processed$data, exts=c("csv","tsv")
   )
-  copy_info(args_processed$data, args_processed$save_directory)
+  #copy_info(args_processed$data, args_processed$save_directory)
   all_data_names <- basename(all_data_paths)
 
   all_groups <- unique(strsplit(all_data_names, "--"))

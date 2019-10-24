@@ -239,14 +239,14 @@ get_save_locs <- function(
   data_filename <- paste0(filename,".csv")
   save_locs$data <- file.path(folder, data_filename)
 
-  text_filename <- paste0(filename, ".txt")
-  save_locs$settings <- file.path(folder, "settings_used", text_filename)
-  save_locs$parameters <- file.path(folder,"parameters_used",text_filename)
+  #text_filename <- paste0(filename, ".txt")
+  #save_locs$settings <- file.path(folder, "settings_used", text_filename)
+  #save_locs$parameters <- file.path(folder,"parameters_used",text_filename)
 
-  log_filename <- paste0(filename,".log")
-  save_locs$full_log_perm <- file.path(folder,"full_log",log_filename)
-  save_locs$full_log <- file.path(scripts_dir, "_current.log")
-  save_locs$parallel_log <- file.path(folder, "full_log", "parallel_log.txt")
+  #log_filename <- paste0(filename,".log")
+  #save_locs$full_log_perm <- file.path(folder,"full_log", log_filename)
+  #save_locs$full_log <- file.path(scripts_dir, "_current.log")
+  save_locs$parallel_log <- file.path(folder, "parallel_log.txt")
 
   # Create all the directories and files
   create_dir <- function(filepath) {
@@ -269,10 +269,11 @@ get_save_filename <- function(group, to_vary_names, vary_in_group) {
   group <- clean_names(group)
   to_vary_names <- clean_names(to_vary_names)
   filename <- paste0(
-    paste0(group,collapse="-"),"--", 
-    paste0(to_vary_names,collapse="-"))
-  if(all(group %in% vary_in_group)) return(filename)
-  filename <- paste0(filename,"--",paste0(vary_in_group,collapse='-'))
+    paste0(group, collapse = "-"), "--", 
+    paste0(to_vary_names, collapse = "-")
+  )
+  if (all(group %in% vary_in_group)) return(filename)
+  filename <- paste0(filename, "--", paste0(vary_in_group,collapse = "-"))
   return(filename)
 }
 
@@ -419,9 +420,9 @@ add_overall <- function(pop_summary, par_names) {
   )
   to_av <- par_names[!(par_names %in% c("prop","nsam"))]
   pop_summary_overall <- pop_summary %>% 
-    mutate_at(vars(to_av), funs(. * prop)) %>%
+    mutate_at(vars(to_av), list(~function(.) . * prop)) %>%
     group_by(type) %>% 
-    summarise_at(vars(to_sum, to_av), funs(sum)) %>% 
+    summarise_at(vars(to_sum, to_av), list(sum)) %>% 
     mutate(name = "overall")
   pop_summary_overall <- rbind(pop_summary, pop_summary_overall)
   return(pop_summary_overall)
@@ -459,44 +460,44 @@ take_averages <- function(pop_many, variants) {
 # Logging funtions - optionally print to stdout and a file
 #------------------------------------------------------------------------------
 
-double_cat <- function(msg, file, verbose = TRUE) {
-  if(verbose) cat(msg)
-  cat(msg, file = file, append = T)
-}
+#double_cat <- function(msg, file, verbose = TRUE) {
+#  if(verbose) cat(msg)
+#  cat(msg, file = file, append = T)
+#}
 
-double_print <- function(printdata, file, verbose = TRUE) {
-  if(verbose) print(printdata)
-  capture.output(print(printdata), file = file, append = T)
-}
+#double_print <- function(printdata, file, verbose = TRUE) {
+#  if(verbose) print(printdata)
+#  capture.output(print(printdata), file = file, append = T)
+#}
 
 #------------------------------------------------------------------------------
 # Copies info folders
 #------------------------------------------------------------------------------
 
-copy_info <- function(from, to) {
+# copy_info <- function(from, to) {
 
-  # Set up directories
-  to_copy <- c("full_log","parameters_used","settings_used")
-  start_dirs <- file.path(from, to_copy)
-  end_dirs <- file.path(to, to_copy)
+#   # Set up directories
+#   to_copy <- c("full_log","parameters_used","settings_used")
+#   start_dirs <- file.path(from, to_copy)
+#   end_dirs <- file.path(to, to_copy)
 
-  # Create directories
-  end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
-  start_f <- function(dir) {
-    if(!(dir.exists(dir))) cat("info folder", dir, "not found\n")
-  }
-  lapply(start_dirs, start_f)
-  lapply(end_dirs, end_f)
+#   # Create directories
+#   end_f <- function(dir) if(!(dir.exists(dir))) dir.create(dir)
+#   start_f <- function(dir) {
+#     if(!(dir.exists(dir))) cat("info folder", dir, "not found\n")
+#   }
+#   lapply(start_dirs, start_f)
+#   lapply(end_dirs, end_f)
 
-  # Copy files
-  ind <- 0
-  for(dir in start_dirs) {
-    ind <- ind+1
-    files <- list.files(dir)
-    paths <- file.path(dir, files)
-    lapply(paths, file.copy, end_dirs[ind], overwrite=TRUE)
-  }
-}
+#   # Copy files
+#   ind <- 0
+#   for(dir in start_dirs) {
+#     ind <- ind+1
+#     files <- list.files(dir)
+#     paths <- file.path(dir, files)
+#     lapply(paths, file.copy, end_dirs[ind], overwrite=TRUE)
+#   }
+# }
 
 #------------------------------------------------------------------------------
 # Returns min and max of the specified variable in dfs
@@ -526,9 +527,9 @@ get_varied <- function(df, possibilities) {
   df <- df %>% 
     filter(name != "overall") %>%
     group_by(name) %>%
-    summarise_at(vars(nms_all), funs(sumunique)) %>%
+    summarise_at(vars(nms_all), list(sumunique)) %>%
     ungroup() %>%
-    summarise_at(vars(nms_all), funs(max))
+    summarise_at(vars(nms_all), list(max))
   varied <- colnames(df)[df[1, ] > 1]
   return(varied)
 }
@@ -543,10 +544,10 @@ is_fixed_var <- function(df, varied) {
     mutate(call = cumsum(run - lag(run, default = 0) < 0) + 1) %>%
     select_at(vars(c(varied, "call", "name"))) %>%
     group_by(name, call) %>%
-    summarise_all(funs(len_un)) %>%
+    summarise_all(list(len_un)) %>%
     ungroup() %>%
     select(-call, -name) %>%
-    summarise_all(funs(any)) %>%
+    summarise_all(list(any)) %>%
     slice(1) %>%
     unlist()
   return(!any(vec))

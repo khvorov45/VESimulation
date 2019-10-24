@@ -2,3 +2,4 @@
 .vscode
 Scripts/_current.log
 __pycache__
+*.cmd

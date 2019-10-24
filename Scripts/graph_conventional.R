@@ -15,7 +15,7 @@ make_graph <- function(
   data_filepaths <- list_files_with_exts(
     args_processed$data, exts=c("csv","tsv")
   )
-  copy_info(args_processed$data, args_processed$save_directory)
+  # copy_info(args_processed$data, args_processed$save_directory)
   
   # Check y fix
   if (args_processed$fix_y) {
@@ -42,7 +42,7 @@ make_graph <- function(
     varied <- get_varied(df, all_variants)
     
     if (is.na(varied)) {
-      cat("did not find eny varied parameter, skipped")
+      cat("did not find any varied parameter, skipped")
       next
     }
     
@@ -107,6 +107,7 @@ if (sys.nframe() == 0) {
   suppressMessages(library(tools))
   suppressMessages(library(ggpubr))
   suppressMessages(library(dplyr))
+  suppressMessages(library(ggrepel))
 
   #----------------------------------------------------------------------------
   # Temporary directory change
